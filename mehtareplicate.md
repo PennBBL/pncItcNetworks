@@ -3,7 +3,7 @@ title: "PNC-ITC Replication"
 authors: Kahini
 output: html_document
 ---
-#### Based off pncitc.md
+#### Copied and modified from pncitc.md
 
 
  
