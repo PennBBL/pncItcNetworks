@@ -66,7 +66,19 @@ singularity exec -e -B /cbica/projects/pncitc  \
 /cbica/projects/pncitc/cwasmdmr.simg \
 /usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/mehtareplicate/cwas307 -f 'logk+relMeanRMSmotion+sex+age' -m /cbica/projects/pncitc/demographics/n307_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_motion_sex_age
 ```
- 
+
+Numbers obtained from the CSV slightly different than before, but ultimately a close replication (likely due to changes in software version): 
+	Cluster Index 	Voxels	P	"-log10(P")	MAX	MAX X (vox)	MAX Y (vox)	MAX Z (vox)	COG X (vox)	COG Y (vox)	COG Z (vox)
+ 	2		11 	9.27E-05   4.03		3.54	30		44		30		30.9		43.9		30.4
+	1		5	0.0228	   1.64		3.54	13		28		24		13.4		28.6		24.2
+Used matlab with [this](https://www.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image) toolbox and these commands on the output images to visualize clusters: 
+
+```
+nii=load_nii('cluster_output/cluster_Z3.09/cluster_Z3.09.hdr')
+save_nii(nii, 'cluster_Z3.09.nii');
+```
+Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images. Ultimately downloaded Mango to view images locally - clusters appeared in the same location they did in previous replications. 
+
 # The following will be updated as the steps are replicated
 ### 2. Significant clusters from mdmr
 The cluster analysis was computed  with the script `scripts/grf_fslcluster.sh`, written based on  [FSL cluster analysis](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Cluster) with  Gaussian Random Field (GRF) theory. 
