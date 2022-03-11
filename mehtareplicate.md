@@ -128,6 +128,7 @@ The path to the two seeds is:
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask1_2mm.nii.gz `
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask2_2mm.nii.gz` 
 
+# following to be updated
 The seed-based correlation was computed with the `scripts/seedcorrelations.sh`
 
 ### 4. Linear regression with FSL `flameo` 
