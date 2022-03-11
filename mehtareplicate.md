@@ -9,7 +9,7 @@ output: html_document
  
 # 1. CWASMDMR
 
-The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
+The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used packages from the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
 
 Distance matrix was first computed with the following script: 
 
@@ -65,17 +65,23 @@ singularity exec -e -B /cbica/projects/pncitc  \
 /usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/mehtareplicate/cwas307 -f 'logk+relMeanRMSmotion+sex+age' -m /cbica/projects/pncitc/demographics/n307_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_motion_sex_age
 ```
 
-Memory and formatting were the main problems with these scripts not running well - the numbers/format left in were what worked for me. 
+Memory and formatting were the main problems with these scripts not running well - the numbers/format left in were what worked for me. The output is at: `/cbica/projects/pncitc/mehtareplicate/cwas307/logk_motion_sex_age`
 
 ### 2. Significant clusters from mdmr
 The cluster analysis was computed  with the script `scripts/grf_fslcluster.sh`, written based on  [FSL cluster analysis](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Cluster) with  Gaussian Random Field (GRF) theory. 
 
-The script `scripts/clusterz3.0.9.sh` was computed on the z-value obtained from mdmr  with the threshold `z=3.09`
-Two clusters was obtained: one at the at the frontal region the order at the TPJ. 
+The script `scripts/cluster.sh` called grf_fslcluster.sh, as listed in this repo under scripts, with `z=3.09`
+Two clusters were obtained: one at the at the frontal region the order at the TPJ. 
+
+cluster.sh reads as below:
+```
+ #!/bin/bash
+dir=/cbica/projects/pncitc
+bash grf_fslcluster.sh -i ${dir}/mehtareplicate/test.nii  -m ${dir}/mehtareplicate/cwas307/mask.nii.gz -t 3.09 -o ${dir}/mehtareplicate/cluster_output
+```
 
 
-
-The output of cluster masks: `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09`
+The output of cluster masks is at: `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09`. 
 
 Numbers obtained from the CSV slightly different than before, but ultimately a close replication (likely due to changes in software version): 
 | Cluster Index | Voxels | P | -log10(P) | MAX | MAX X (vox) | MAX Y (vox) | MAX Z (vox) | COG X (vox) | COG Y (vox) | COG Z (vox) |
@@ -83,8 +89,7 @@ Numbers obtained from the CSV slightly different than before, but ultimately a c
 | 2 | 11 | 9.27E-05 | 4.03 | 3.54 | 30 | 44 | 30 | 30.9 | 43.9 | 30.4 |
 | 1 | 5 | 0.0228 | 1.64	 | 3.54 | 13 | 28 | 24 | 13.4 | 28.6 | 24.2 |
 
-
-Used matlab with [this](https://www.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image) toolbox and these commands on the output images (the .img and .hdr files had to be in the same directory) to visualize clusters: 
+However, the output image of clusters produced was an .img and .hdr which needed to be turned into a nifti format. Used matlab with [this](https://www.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image) toolbox and these commands on the output images (the .img and .hdr files had to be in the same directory for this to work): 
 
 ```
 nii=load_nii('cluster_output/cluster_Z3.09/cluster_Z3.09.hdr')
@@ -93,12 +98,12 @@ save_nii(nii, 'cluster_Z3.09.nii');
 *NOTE: ```fslchfiletype NIFTI_GZ cluster_Z3.09.img cluster_Z3.09.nii``` achieves the same thing and is faster*
 
 
-Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images - in Mango, only one cluster was visible. Ultimately downloaded MRICRON to view images locally - clusters appeared in the same location they did in previous replications. 
+Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images with "NaN" scales - in Mango, only one cluster was visible. Ultimately downloaded MRICRON to view images locally - clusters appeared in basically the same location they did in previous replications. 
 
 
 
 ### 3. Seed-based correlation 
-Two masks were generated from the cluster_z3_09.nii, using fslmath at/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks:
+Two different masks were generated from the cluster_z3_09.nii, using fslmath at/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks:
 
 (See [https://mandymejia.com/fsl-maths-commands/](https://mandymejia.com/fsl-maths-commands/))
 
@@ -109,12 +114,17 @@ fslmaths cluster_Z3.09.nii.gz -thr 2 -uthr 2 mask2.nii.gz #CLUSTER2
 
 Masks generated were again in .hdr and .img format, so I used fslchfiletype to turn them into niftis.
 
+The two  masks were upsampled from 4mm to 2mm and were used as seeds for seed-based correlation.
 
-# following will be updated
-s
-The two  masks were upsample from 4mm to 2mm and were used as seeds for seed-based correlation.
+This upsampling was done using the pnc_2mm template, found at `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/pnc_template_brain_2mm.nii.gz'
 
-the two seeds: 
+The code used for this was: 
+```
+3dresample -master pnc_template_brain_2mm.nii.gz -input mask1.nii.gz -prefix mask1_2mm.nii.gz
+3dresample -master pnc_template_brain_2mm.nii.gz -input mask2.nii.gz -prefix mask2_2mm.nii.gz
+```
+
+The path to the two seeds is: 
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask1_2mm.nii.gz `
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask2_2mm.nii.gz` 
 
