@@ -133,8 +133,6 @@ The seed-based correlation was computed with the following script, and the `xcpe
 ```
 #!/bin/bash # DEFINITELY QSUB THIS ONE
 cd /cbica/projects/pncitc/mehtareplicate
-#singularity shell xcpengine.simg*
-#singularity exec -e -B cbica/projects/pncitc/mehtareplicate xcpengine.simg*
 XCPEDIR=xcpEngine
 seedpoint1=/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/mask1_2mm.nii.gz
 seedpoint2=/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/mask2_2mm.nii.gz
@@ -158,7 +156,7 @@ do
      rm -rf $outputdir/seed/mask2/${a}_${b}_connectivity_mask2_seed.nii.gz
 done
 ```
-
+*NOTE: For this script, the output displays in the error log for some reason*
 
 ### 4. Linear regression with FSL `flameo` 
 
