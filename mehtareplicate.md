@@ -9,7 +9,7 @@ output: html_document
  
 # 1. CWASMDMR
 
-The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`).
+The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
 
 Distance matrix was first computed with the following script: 
 
@@ -18,17 +18,15 @@ Distance matrix was first computed with the following script:
 #$ -l h_vmem=320G
 #$ -l tmpfree=200G
 
-#SING=/share/apps/singularity/2.5.1/bin/singularity # singularity directory on chead 
-singimage=/cbica/projects/pncitc/cwasmdmr.simg # cwasmdmr image on chead
-scriptdir=/usr/local/bin # script to run inside the image 
+singimage=/cbica/projects/pncitc/cwasmdmr.simg 
+scriptdir=/usr/local/bin
 
 
-mdmrouput=/cbica/projects/pncitc/mehtareplicate/cwas307 #output directory. note that i added /home/username in front 
+mdmrouput=/cbica/projects/pncitc/mehtareplicate/cwas307 #output directory
 brainmask=/cbica/projects/pncitc/subjectData/PNCgrey.nii.gz # greymatter mask from pnc   
 bgim=/cbica/projects/pncitc/subjectData/PNCbrain.nii.gz # pnc template from pnc
 
 imagelist=/cbica/projects/pncitc/subjectData/imageinput_rest2.csv # list of image in nifti # HAD TO RE-GENERATE THIS LIST AS THE FILE PATHS HAD CHANGED
-#modelcsv=/cbica/home//adebimpa/cbica/projects/GURLAB/projects/pncitc/subjectData/demographics/model.csv # demographic and factors, 
 
 
 rm  -rf $mdmrouput # remove previous run if exist 
