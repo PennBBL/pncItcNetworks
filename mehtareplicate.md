@@ -116,7 +116,7 @@ Masks generated were again in .hdr and .img format, so I used fslchfiletype to t
 
 The two  masks were upsampled from 4mm to 2mm and were used as seeds for seed-based correlation.
 
-This upsampling was done using the pnc_2mm template, found at `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/pnc_template_brain_2mm.nii.gz'
+This upsampling was done using the pnc_2mm template, found at `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/pnc_template_brain_2mm.nii.gz`
 
 The code used for this was: 
 ```
