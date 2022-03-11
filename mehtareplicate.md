@@ -27,7 +27,7 @@ mdmrouput=/cbica/projects/pncitc/mehtareplicate/cwas307 #output directory. note 
 brainmask=/cbica/projects/pncitc/subjectData/PNCgrey.nii.gz # greymatter mask from pnc   
 bgim=/cbica/projects/pncitc/subjectData/PNCbrain.nii.gz # pnc template from pnc
 
-imagelist=/cbica/projects/pncitc/subjectData/imageinput_rest2.csv # list of image in nifti # check image list, /home/username  
+imagelist=/cbica/projects/pncitc/subjectData/imageinput_rest2.csv # list of image in nifti # HAD TO RE-GENERATE THIS LIST AS THE FILE PATHS HAD CHANGED
 #modelcsv=/cbica/home//adebimpa/cbica/projects/GURLAB/projects/pncitc/subjectData/demographics/model.csv # demographic and factors, 
 
 
