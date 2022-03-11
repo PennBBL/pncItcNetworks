@@ -160,13 +160,15 @@ done
 
 ### 4. Linear regression with FSL `flameo` 
 
-Flameo regression computation requires `design`,`contrast` and `group`. The script `scripts/makeflameodesig.R`
+Flameo regression computation requires `design`,`contrast` and `group` text files. The script `scripts/makeflameodesig.R` was used to generate these, but the package was out of date in R on CBICA, so I ran it locally and copied the needed files over into `cbica/projects/pncitic/mehtareplicate/regression`
 
-The flameo linear regression was computed with the script: `scripts/flameo`
+# WILL BE UPDATED
+The flameo linear regression was computed with the script: `scripts/flameo.sh`
+
 The outputs of flameo regression: 
-`/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/mask1`
 
-`/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/mask2`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask1`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask2`
 
 In each directory, there are zvalues: 
 
@@ -183,8 +185,8 @@ In each directory, there are zvalues:
 
 The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection`. The outputs are located here:
 
-`/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/mask1/logk`
-`/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/mask2/logk`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask1/logk`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask2/logk`
 
 FDR corrected z-values. 
 
