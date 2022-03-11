@@ -90,11 +90,26 @@ Used matlab with [this](https://www.mathworks.com/matlabcentral/fileexchange/879
 nii=load_nii('cluster_output/cluster_Z3.09/cluster_Z3.09.hdr')
 save_nii(nii, 'cluster_Z3.09.nii');
 ```
+*NOTE: ```fslchfiletype NIFTI_GZ cluster_Z3.09.img cluster_Z3.09.nii``` achieves the same thing and is faster*
+
+
 Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images - in Mango, only one cluster was visible. Ultimately downloaded MRICRON to view images locally - clusters appeared in the same location they did in previous replications. 
 
-# following will be updated
+
 
 ### 3. Seed-based correlation 
+Two masks were generated from the cluster_z3_09.nii, using fslmath at/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks:
+
+(See[https://mandymejia.com/fsl-maths-commands/](https://mandymejia.com/fsl-maths-commands/))
+'''
+fslmaths cluster_Z3.09.nii.gz -thr 1 -uthr 2 mask1.nii.gz #CLUSTER1
+fslmaths cluster_Z3.09.nii.gz -thr 2 -uthr 2 mask2.nii.gz #CLUSTER2
+'''
+Masks generated were again in .hdr and .img format, so I used fslchfiletype to turn them into niftis.
+
+
+# following will be updated
+s
 The two  masks were upsample from 4mm to 2mm and were used as seeds for seed-based correlation.
 
 the two seeds: 
