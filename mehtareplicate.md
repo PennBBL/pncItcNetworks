@@ -148,12 +148,12 @@ cat $bblid | while IFS="," read -r a b ;
 do
      img=$(ls -f $image/${a}_${b}_rest.nii.gz)
      singularity exec --cleanenv -B /cbica/projects/pncitc/mehtareplicate /cbica/projects/pncitc/mehtareplicate/xcpengine.simg /xcpEngine/utils/seedconnectivity -i $img -s $seedpoint1 -o $outputdir -p ${a},${b} -k 6 -n mask1\
-     rm -rf $outputdir/seed/mask1/${a}_${b}_connectivity_mask1_seed.nii.gz
+     #rm -rf $outputdir/seed/mask1/${a}_${b}_connectivity_mask1_seed.nii.gz
 
 
      img=$(ls -f $image/${a}_${b}_rest.nii.gz)
      singularity exec --cleanenv -B /cbica/projects/pncitc/mehtareplicate /cbica/projects/pncitc/mehtareplicate/xcpengine.simg /xcpEngine/utils/seedconnectivity -i $img -s $seedpoint2 -o $outputdir -p ${a},${b} -k 6 -n mask2\
-     rm -rf $outputdir/seed/mask2/${a}_${b}_connectivity_mask2_seed.nii.gz
+     #rm -rf $outputdir/seed/mask2/${a}_${b}_connectivity_mask2_seed.nii.gz
 done
 ```
 *NOTE: For this script, the output displays in the error log for some reason*
