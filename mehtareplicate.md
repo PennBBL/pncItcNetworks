@@ -100,11 +100,13 @@ Notably, the images were very sparse and hard to see - if viewed in mrpeek, appe
 ### 3. Seed-based correlation 
 Two masks were generated from the cluster_z3_09.nii, using fslmath at/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks:
 
-(See[https://mandymejia.com/fsl-maths-commands/](https://mandymejia.com/fsl-maths-commands/))
-'''
+(See [https://mandymejia.com/fsl-maths-commands/](https://mandymejia.com/fsl-maths-commands/))
+
+```
 fslmaths cluster_Z3.09.nii.gz -thr 1 -uthr 2 mask1.nii.gz #CLUSTER1
 fslmaths cluster_Z3.09.nii.gz -thr 2 -uthr 2 mask2.nii.gz #CLUSTER2
-'''
+```
+
 Masks generated were again in .hdr and .img format, so I used fslchfiletype to turn them into niftis.
 
 
