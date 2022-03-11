@@ -15,7 +15,7 @@ Distance matrix was first computed with the following script:
 
 ```
 #!/bin/bash
-#$ -l h_vmem=320G
+#$ -l h_vmem=320G #QSUB, can take some hours
 #$ -l tmpfree=200G
 
 singimage=/cbica/projects/pncitc/cwasmdmr.simg 
@@ -57,7 +57,7 @@ other covariates used are `sex`, `age`, and `relative rms`:
    
 The script used for mdmr computation is as below: 
 ```
-#!/bin/bash
+#!/bin/bash #QSUB, can take some hours
 #$ -l h_vmem=300G
 #$ -l tmpfree=300G
 singularity exec -e -B /cbica/projects/pncitc  \
@@ -75,7 +75,7 @@ Two clusters were obtained: one at the at the frontal region the order at the TP
 
 cluster.sh reads as below:
 ```
- #!/bin/bash
+ #!/bin/bash #NO NEED TO QSUB THIS
 dir=/cbica/projects/pncitc
 bash grf_fslcluster.sh -i ${dir}/mehtareplicate/test.nii  -m ${dir}/mehtareplicate/cwas307/mask.nii.gz -t 3.09 -o ${dir}/mehtareplicate/cluster_output
 ```
@@ -128,8 +128,37 @@ The path to the two seeds is:
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask1_2mm.nii.gz `
 `/cbica/projects/GURLAB/projects/pncitc/output/cluster_Z3.09/mask2_2mm.nii.gz` 
 
-# following to be updated
-The seed-based correlation was computed with the `scripts/seedcorrelations.sh`
+The seed-based correlation was computed with the following script, and the `xcpengine.simg` file under `/cbica/projects/pncitc/mehtareplicate`:
+
+```
+#!/bin/bash # DEFINITELY QSUB THIS ONE
+cd /cbica/projects/pncitc/mehtareplicate
+#singularity shell xcpengine.simg*
+#singularity exec -e -B cbica/projects/pncitc/mehtareplicate xcpengine.simg*
+XCPEDIR=xcpEngine
+seedpoint1=/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/mask1_2mm.nii.gz
+seedpoint2=/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09/masks/mask2_2mm.nii.gz
+
+bblid=/cbica/projects/pncitc/demographics/n307_bblid_scandid.csv
+image=/cbica/projects/pncitc/subjectData/rest/
+outputdir=/cbica/projects/pncitc/mehtareplicate/seedcorrmaps
+
+mkdir -p ${outputdir}
+
+cat $bblid | while IFS="," read -r a b ; 
+
+do
+     img=$(ls -f $image/${a}_${b}_rest.nii.gz)
+     singularity exec --cleanenv -B /cbica/projects/pncitc/mehtareplicate /cbica/projects/pncitc/mehtareplicate/xcpengine.simg /xcpEngine/utils/seedconnectivity -i $img -s $seedpoint1 -o $outputdir -p ${a},${b} -k 6 -n mask1\
+     rm -rf $outputdir/seed/mask1/${a}_${b}_connectivity_mask1_seed.nii.gz
+
+
+     img=$(ls -f $image/${a}_${b}_rest.nii.gz)
+     singularity exec --cleanenv -B /cbica/projects/pncitc/mehtareplicate /cbica/projects/pncitc/mehtareplicate/xcpengine.simg /xcpEngine/utils/seedconnectivity -i $img -s $seedpoint2 -o $outputdir -p ${a},${b} -k 6 -n mask2\
+     rm -rf $outputdir/seed/mask2/${a}_${b}_connectivity_mask2_seed.nii.gz
+done
+```
+
 
 ### 4. Linear regression with FSL `flameo` 
 
