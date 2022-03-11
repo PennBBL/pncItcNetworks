@@ -78,10 +78,10 @@ Two clusters was obtained: one at the at the frontal region the order at the TPJ
 The output of cluster masks: `/cbica/projects/pncitc/mehtareplicate/cluster_output/cluster_Z3.09`
 
 Numbers obtained from the CSV slightly different than before, but ultimately a close replication (likely due to changes in software version): 
-	|Cluster Index 	|Voxels	|P	    |"-log10(P")	|MAX	|MAX X (vox)	|MAX Y (vox)	|MAX Z (vox)	|COG X (vox)	|COG Y (vox)	|COG Z (vox) |
- 	|--------------	|------	|-----------|-------------------|-------|---------------|---------------|---------------|---------------|---------------|------------|
-	|2		|11 	|9.27E-05  |4.03		|3.54	|30		|44		|30		|30.9		|43.9		|30.4|
-	|1		|5	|0.0228	   |1.64		|3.54	|13		|28		|24		|13.4		|28.6		|24.2|
+| Cluster Index | Voxels | P | "-log10(P") | MAX | MAX X (vox) | MAX Y (vox) | MAX Z (vox) | COG X (vox) | COG Y (vox) | COG Z (vox) |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 2 | 11 | 9.27E-05 | 4.03 | 3.54 | 30 | 44 | 30 | 30.9 | 43.9 | 30.4 |
+| 1 | 5 | 0.0228 | 1.64	 | 3.54 | 13 | 28 | 24 | 13.4 | 28.6 | 24.2 |
 Used matlab with [this](https://www.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image) toolbox and these commands on the output images (the .img and .hdr files had to be in the same directory) to visualize clusters: 
 
 ```
