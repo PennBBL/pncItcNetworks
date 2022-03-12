@@ -157,13 +157,14 @@ do
 done
 ```
 *NOTE: For this script, the output displays in the error log for some reason*
+*Also note, the demographic csvs say "scandid", not "scanid"
 
 ### 4. Linear regression with FSL `flameo` 
 
 Flameo regression computation requires `design`,`contrast` and `group` text files. The script `scripts/makeflameodesig.R` was used to generate these, but the package was out of date in R on CBICA, so I ran it locally and copied the needed files over into `cbica/projects/pncitic/mehtareplicate/regression`
 
 # WILL BE UPDATED
-The flameo linear regression was computed with the script: `scripts/flameo.sh`
+The flameo linear regression was computed with the script: `scripts/flameo.sh`, changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `masks1.csv` and `masks2.csv` respectively. 
 
 The outputs of flameo regression: 
 
