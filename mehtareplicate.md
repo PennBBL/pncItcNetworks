@@ -122,7 +122,6 @@ The code used for this was:
 ```
 3dresample -master pnc_template_brain_2mm.nii.gz -input mask1.nii.gz -prefix mask1_2mm.nii.gz
 3dresample -master pnc_template_brain_2mm.nii.gz -input mask2.nii.gz -prefix mask2_2mm.nii.gz
-3dresample -master pnc_template_brain_2mm.nii.gz -input mask2.nii.gz -prefix mask1and2_2mm.nii.gz
 ```
 
 The path to the two seeds is: 
@@ -309,7 +308,7 @@ FDR corrected z-values.
 ### 5. Vizualisation of Results - results pretty similar to first iteration, based off images in the notebooks in this repo
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
 
-  a. for clusters and mean of seed-based correlation (I ran this one last, as I had trouble locating the script, hence the high value for ii) : 
+  a. for clusters and mean of seed-based correlation (I ran this one last, as I had trouble locating the script (it's now `cbica/projects/pncitc/dropbox/seed-basedcorrelation.ipynb`), hence the high value for ii) : 
 At the end of the script, I added these lines to write out each output to .html: 
   ```
   ii = 4
@@ -317,6 +316,7 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
+  _Note: had to use flchfiletype on the copeseed images_
   b. for mask1 : `notebook/flameomask1.ipynb`
   
   At the end of the script, I added these lines to write out each output to .html: 
@@ -336,9 +336,9 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
+Images I generated were saved in `cbica/projects/pncitc/mehtareplicate/KMVis/full_cortical_vis` as AA(produced by Azees)or KM(me). They are numbered to correspond.
 
-
-### 6. Regional plot of signitiifcant regions of logk - results pretty similar to first iteration
+### 6. Regional plot of significant regions of logk - results pretty similar to first iteration
  
  I did this step locally as the R libraries on CBICA were very out of date. 
  
@@ -367,7 +367,7 @@ corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam
 ```
 
 
-The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`.
+The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
 
 
