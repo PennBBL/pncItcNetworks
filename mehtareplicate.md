@@ -163,16 +163,19 @@ done
 
 Flameo regression computation requires `design`,`contrast` and `group` text files. The script `scripts/makeflameodesig.R` was used to generate these, but the package was out of date in R on CBICA, so I ran it locally and copied the needed files over into `cbica/projects/pncitic/mehtareplicate/regression`
 
-I also converted the designlogkmat from .txt to .mat, using: 
+_Note: You can install the required packages in a required PERSONAL library and thus run the script on CUBIC_
+
+I also converted the designlogkmat from .txt to .mat and did the same for grp.txt, using: 
+
 ```
-M = dlmread('desigmatlogkonly.txt'); %Use a better name that M
-save('desigmatlogkonly.mat', 'M');
+Text2Vest desigmatlogkonly.txt desigmatlogkonly.mat
+Text2Vest grp.txt grp.mat
 ```
 
 The flameo linear regression was computed with this script:
 
 ```
-bblid=/cbica/projects/pncitc/demographics/n307_bblid_scandid.csv
+bblid=/cbica/projects/pncitc/demographics/n307_bblid_scandid.csv #FIRST HALF RUNS QUICKLY, WOULD QSUB BECAUSE THE SECOND PART TAKES A BIT LONGER
 imagedir=/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/seed/
 scriptdir=/cbica/projects/pncitc/mehtareplicate/regression
 outputdir=/cbica/projects/pncitc/mehtareplicate/regression
@@ -204,12 +207,12 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 fslmerge -t ${outputdir}/4Dcopeseed2.nii.gz $(cat $imagelist2)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask1/logk
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.mat --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
 
-flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask2/logk
+flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.mat --runmode=flame1 --ld=$outputdir/mask2/logk
 ```
 
-changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `masks1.csv` and `masks2.csv` respectively. 
+changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `mask1.csv` and `mask2.csv` respectively. 
 
 The outputs of flameo regression: 
 
