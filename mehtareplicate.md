@@ -213,8 +213,8 @@ changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regressi
 
 The outputs of flameo regression: 
 
-`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask1`
-`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask2`
+`/cbica/projects/pncitc/mehtareplicate/regression/mask1`
+`/cbica/projects/pncitc/mehtareplicate/regression/mask2`
 
 In each directory, there are zvalues: 
 
