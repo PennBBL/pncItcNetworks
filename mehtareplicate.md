@@ -303,12 +303,12 @@ FDR corrected z-values.
 
   `zfdr5 : age`
   
-  # to be updated
 
-### 5. Vizualisation of Results
+
+### 5. Vizualisation of Results - results pretty similar to first iteration
 
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
-
+  # to be updated
   a. for clusters and mean of seed-based correlation : #WAITING ON SCRIPT
 
   b. for mask1 : `notebook/flameomask1.ipynb`
@@ -332,7 +332,7 @@ for x in viewim:
   ```
 
 
-### 6. Regional plot of signitiifcant regions of logk 
+### 6. Regional plot of signitiifcant regions of logk - results pretty similar to first iteration
  
  I did this step locally as the R libraries on CBICA were very out of date. 
  
