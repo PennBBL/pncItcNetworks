@@ -169,7 +169,8 @@ I also converted the designlogkmat from .txt to .mat and did the same for grp.tx
 
 ```
 Text2Vest desigmatlogkonly.txt desigmatlogkonly.mat
-Text2Vest grp.txt grp.mat
+Text2Vest grp.txt grp.grp
+Text2Vest contrast4.txt contrast4.con
 ```
 
 The flameo linear regression was computed with this script:
@@ -210,12 +211,12 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 fslmerge -t ${outputdir}/4Dcopeseed2.nii.gz $(cat $imagelist2)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.mat --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
 
-flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.mat --runmode=flame1 --ld=$outputdir/mask2/logk
+flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask2/logk
 ```
 
-changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `mask1.csv` and `mask2.csv` respectively. 
+I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `mask1.csv` and `mask2.csv` respectively. 
 
 The outputs of flameo regression: 
 
