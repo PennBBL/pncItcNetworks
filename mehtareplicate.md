@@ -305,12 +305,17 @@ FDR corrected z-values.
   
 
 
-### 5. Vizualisation of Results - results pretty similar to first iteration
-
+### 5. Vizualisation of Results - results pretty similar to first iteration, based off images in the notebooks in this repo
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
-  # to be updated
-  a. for clusters and mean of seed-based correlation : #WAITING ON SCRIPT
 
+  a. for clusters and mean of seed-based correlation (I ran this one last, as I had trouble locating the script, hence the high value for ii) : 
+At the end of the script, I added these lines to write out each output to .html: 
+  ```
+  ii = 4
+for x in viewim:
+    ii+=1
+    x.save_as_html("visualization"+str(ii)+".html")
+  ```
   b. for mask1 : `notebook/flameomask1.ipynb`
   
   At the end of the script, I added these lines to write out each output to .html: 
