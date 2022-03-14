@@ -163,8 +163,47 @@ done
 
 Flameo regression computation requires `design`,`contrast` and `group` text files. The script `scripts/makeflameodesig.R` was used to generate these, but the package was out of date in R on CBICA, so I ran it locally and copied the needed files over into `cbica/projects/pncitic/mehtareplicate/regression`
 
-# WILL BE UPDATED
-The flameo linear regression was computed with the script: `scripts/flameo.sh`, changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `masks1.csv` and `masks2.csv` respectively. 
+The flameo linear regression was computed with this script:
+
+```
+bblid=/cbica/projects/pncitc/demographics/n307_bblid_scandid.csv
+imagedir=/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/seed/
+scriptdir=/cbica/projects/pncitc/mehtareplicate/regression
+outputdir=/cbica/projects/pncitc/mehtareplicate/regression
+demogdir=/cbica/projects/pncitc/mehtareplicate/regression
+
+
+imagelist1=$scriptdir/mask1.csv
+imagelist2=$scriptdir/mask2.csv
+
+
+rm -rf $imagelist1
+rm -rf $imagelist2
+
+
+cat $bblid | while IFS="," read -r a b ; 
+
+do 
+     img1=$(ls -f $imagedir/mask1/${a}_${b}_connectivity_mask1Z_sm6.nii.gz)
+     img2=$(ls -f $imagedir/mask2/${a}_${b}_connectivity_mask2Z_sm6.nii.gz)
+     
+     echo $img1 >> $imagelist1
+     echo $img2 >> $imagelist2
+
+done 
+
+
+mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
+
+fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
+fslmerge -t ${outputdir}/4Dcopeseed2.nii.gz $(cat $imagelist2)
+
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask1/logk
+
+flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask2/logk
+```
+
+changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `masks1.csv` and `masks2.csv` respectively. 
 
 The outputs of flameo regression: 
 
@@ -183,6 +222,7 @@ In each directory, there are zvalues:
 
   `zstat5 : age`
 
+# to be updated
 
 The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection`. The outputs are located here:
 
