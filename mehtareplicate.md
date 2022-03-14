@@ -198,9 +198,9 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 fslmerge -t ${outputdir}/4Dcopeseed2.nii.gz $(cat $imagelist2)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask1/logk
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.txt  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask1/logk
 
-flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask2/logk
+flameo --copefile=${outputdir}/4Dcopeseed2.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.txt  --tc=${demogdir}/contrast4.txt  --cs=${demogdir}/grp.txt --runmode=flame1 --ld=$outputdir/mask2/logk
 ```
 
 changing file paths to point to  `cbica/projects/pncitic/mehtareplicate/regression`. I also created the flameo csvs pointing to the mask1Z_sm6.nii.gz niftis in the same directory, naming the csvs `masks1.csv` and `masks2.csv` respectively. 
