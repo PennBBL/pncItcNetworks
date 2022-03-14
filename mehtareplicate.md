@@ -175,6 +175,9 @@ Text2Vest grp.txt grp.mat
 The flameo linear regression was computed with this script:
 
 ```
+#!/bin/bash
+#$ -l h_vmem=200G
+#$ -l tmpfree=200G # this will throw an error about ": $PATH does not agree with $PATH_modshare counter.", but it shouldn't stop the process. 
 bblid=/cbica/projects/pncitc/demographics/n307_bblid_scandid.csv #FIRST HALF RUNS QUICKLY, WOULD QSUB BECAUSE THE SECOND PART TAKES A BIT LONGER
 imagedir=/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/seed/
 scriptdir=/cbica/projects/pncitc/mehtareplicate/regression
