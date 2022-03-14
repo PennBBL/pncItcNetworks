@@ -309,7 +309,8 @@ FDR corrected z-values.
 
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
 
-  a. for clusters and mean of seed-based correlation : `notebook/seed-basedcorrelation.ipynb`
+  a. for clusters and mean of seed-based correlation : `notebook/meanseedcorrelationplot.Rmd`. 
+  - Had to install all packages listed in script in personal library, using mirror image 78. 
 
   b. for mask1 : `notebook/flameomask1.ipynb`
   
