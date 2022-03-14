@@ -312,10 +312,24 @@ All computations were done in PNC template. For vizualisation, all the nifti fil
   a. for clusters and mean of seed-based correlation : `notebook/seed-basedcorrelation.ipynb`
 
   b. for mask1 : `notebook/flameomask1.ipynb`
+  
+  At the end of the script, I added these lines to write out each output to .html: 
+  ```
+  ii = 0
+for x in viewim:
+    ii+=1
+    x.save_as_html("visualization"+str(ii)+".html")
+  ```
 
   c. for mask2 : `notebook/flameomask2.ipynb`
 
-
+ At the end of the script, I added these lines to write out each output to .html: 
+  ```
+  ii = 2
+for x in viewim:
+    ii+=1
+    x.save_as_html("visualization"+str(ii)+".html")
+  ```
 
 
 ### 6. Regional plot of signitiifcant regions of logk 
