@@ -235,9 +235,58 @@ In each directory, there are zvalues:
 
   `zstat5 : age`
 
-# to be updated
 
-The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection`. The outputs are located here:
+The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection`. For this, 
+1. I opened 'R' in CBICA
+2. Did:
+
+
+```
+setwd('/cbica/projects/pncitc/mehtareplicate/regression/')
+.libPaths("/gpfs/fs001/cbica/home/mehtaka/R/x86_64-conda_cos6-linux-gnu-library/3.6")
+```
+
+Then chose to install [RNifti](https://rdrr.io/cran/RNifti/f/README.md) in a personal library, using mirror #78. Steps involved :
+1. install.packages("remotes")
+2. install_github("jonclayden/RNifti")
+
+Then I ran the rest of the script:
+```
+rm(list = ls())
+library(RNifti)
+# for mask1 or seed1
+for (i in 1:5 ){  
+    mask=readNifti('mask1/logk/mask.nii.gz')
+    z1=readNifti(paste0('mask1/logk/zstat',i,'.nii.gz'))
+    Z=z1[mask==1]
+    p <- 2*pnorm((-abs(Z)))
+    p1=p.adjust(p, method = 'fdr')
+    zvals = qnorm(1 - (p1/2)) 
+    zvals[zvals==Inf]=10
+    Z[Z>0]=1; Z[Z<0]=-1
+    zm=mask
+    zm[mask==1]=zvals*Z
+    writeNifti(zm,paste0('mask1/logk/zfdr',i,'.nii.gz'),template = mask)
+}
+
+# for mask2 or seed2
+for (i in 1:5 ){  
+    mask=readNifti('mask2/logk/mask.nii.gz')
+    z1=readNifti(paste0('mask2/logk/zstat',i,'.nii.gz'))
+    Z=z1[mask==1]
+    p <- 2*pnorm((-abs(Z)))
+    p1=p.adjust(p, method = 'fdr')
+    zvals = qnorm(1 - (p1/2)) 
+    zvals[zvals==Inf]=10
+    Z[Z>0]=1; Z[Z<0]=-1
+    zm=mask
+    zm[mask==1]=zvals*Z
+    writeNifti(zm,paste0('mask2/logk/zfdr',i,'.nii.gz'),template = mask)
+}
+```
+
+
+The outputs are located here:
 
 `/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask1/logk`
 `/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask2/logk`
@@ -253,6 +302,8 @@ FDR corrected z-values.
   `zfdr4 : motion`
 
   `zfdr5 : age`
+  
+  # to be updated
 
 ### 5. Vizualisation of Results
 
