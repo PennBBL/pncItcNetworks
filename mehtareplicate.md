@@ -309,8 +309,7 @@ FDR corrected z-values.
 
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
 
-  a. for clusters and mean of seed-based correlation : `notebook/meanseedcorrelationplot.Rmd`. 
-  - Had to install all packages listed in script in personal library, using mirror image 78. 
+  a. for clusters and mean of seed-based correlation : #WAITING ON SCRIPT
 
   b. for mask1 : `notebook/flameomask1.ipynb`
   
@@ -335,10 +334,35 @@ for x in viewim:
 
 ### 6. Regional plot of signitiifcant regions of logk 
  
- The positive and negative zvalues of seed-based correlation regression with logk was extracted with the script `scripts/extractsignificantcluster.R` for both seed masks 
+ I did this step locally as the R libraries on CBICA were very out of date. 
+ 
+The positive and negative zvalues of seed-based correlation regression with logk was extracted with the script `scripts/extractsignificantcluster.R` for both seed masks. For some reason, changing the loop to go from 2 to 308 (rather than 1 to 307) fixed errors I had, but the last subject kept getting left out and the first row was always populated with zeros, so I simply ran the last participant by itself and copy-pasted their results into the first row:
 
- The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`
+Other than changing the paths in general, I made this change to write out the one subject: 
+Original script: 
+```
+for (i in 1:307 ) {
+     img1=readNifti(paste0('/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/seed/mask1/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz'))
+     img2=readNifti(paste0('/cbica/projects/GURLAB/projects/pncitc/output/seedcorrmaps/seed/mask2/',b[i,1],'_',b[i,2],'_connectivity_mask2Z_sm6.nii.gz'))
+     datap1=img1[p_m1==1]; datap2=img2[p_m2==1]
+     datam1=img1[n_m1==1]; datam2=img2[n_m2==1]
+     corrdata[i,]=c(b[i,1],b[i,2],mean(datap1),mean(datam1),mean(datap2),mean(datam2))
+}
+```
 
+Changes: 
+
+```
+img1=readNifti(#path to their nifti)
+img2=readNifti(#path to their nifti)
+datap1=img1[p_m1==1]; datap2=img2[p_m2==1]
+datam1=img1[n_m1==1]; datam2=img2[n_m2==1]
+corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam2)
+```
+
+
+The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`.
+ 
 
 
 
