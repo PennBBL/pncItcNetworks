@@ -316,7 +316,7 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
-  _Note: had to use flchfiletype on the copeseed images_
+  _Note: had to use flchfiletype on the copeseed images, and move the .hdr and .img files into the mehtareplicate directory. Then, had to follow the same procedure for the copeseed mean images_
   b. for mask1 : `notebook/flameomask1.ipynb`
   
   At the end of the script, I added these lines to write out each output to .html: 
@@ -336,6 +336,8 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
+_Note: You have to use fslchfiletype to convert the output of mask2.run(), which is mask1and2_2mm.img and .hdr, to nifti. Then feed the path to this as the input of at.inputs.input_image_
+
 Images I generated were saved in `cbica/projects/pncitc/mehtareplicate/KMVis/full_cortical_vis` as AA(produced by Azees)or KM(me). They are numbered to correspond.
 
 ### 6. Regional plot of significant regions of logk - results pretty similar to first iteration
