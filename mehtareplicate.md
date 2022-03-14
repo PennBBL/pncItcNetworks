@@ -122,6 +122,7 @@ The code used for this was:
 ```
 3dresample -master pnc_template_brain_2mm.nii.gz -input mask1.nii.gz -prefix mask1_2mm.nii.gz
 3dresample -master pnc_template_brain_2mm.nii.gz -input mask2.nii.gz -prefix mask2_2mm.nii.gz
+3dresample -master pnc_template_brain_2mm.nii.gz -input mask2.nii.gz -prefix mask1and2_2mm.nii.gz
 ```
 
 The path to the two seeds is: 
