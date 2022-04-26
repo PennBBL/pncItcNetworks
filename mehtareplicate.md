@@ -288,8 +288,8 @@ for (i in 1:5 ){
 
 The outputs are located here:
 
-`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask1/logk`
-`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/mask2/logk`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/seed/mask1/logk`
+`/cbica/projects/pncitc/mehtareplicate/seedcorrmaps/seed/mask2/logk`
 
 FDR corrected z-values. 
 
