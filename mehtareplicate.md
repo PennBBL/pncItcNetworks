@@ -5,7 +5,7 @@ output: html_document
 ---
 #### Copied and modified from pncitc.md
 
-
+Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQAs on them. The code and .csvs for this are at `cbica/projects/pncitc/samplerecreation`. 
  
 # 1. CWASMDMR
 
