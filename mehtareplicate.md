@@ -5,9 +5,7 @@ output: html_document
 ---
 #### Copied and modified from pncitc.md
 
-Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQAs on them. The code and .csvs for this are at `cbica/projects/pncitc/samplerecreation`. 
- 
-# 1. CWASMDMR
+Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQAs on them. The code and .csvs for this are at `cbica/projects/pncitc/samplerecreation`. All subsequent analyses will be run in `cbica/projects/pncitc/mehtareplicaten293`, with naming analogous to the file paths listed below for the n307 replication. 
 
 The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used packages from the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
 
