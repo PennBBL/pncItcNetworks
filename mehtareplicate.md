@@ -123,8 +123,8 @@ The code used for this was:
 ```
 
 The path to the two seeds is: 
-`~/cluster_Z3.09/mask1_2mm.nii.gz `
-`~/cluster_Z3.09/mask2_2mm.nii.gz` 
+`~/cluster_Z3.09/masks/mask1_2mm.nii.gz `
+`~/cluster_Z3.09/masks/mask2_2mm.nii.gz` 
 
 The seed-based correlation was computed with the following script, and the `xcpengine.simg` file under `/cbica/projects/pncitc/mehtareplicate`:
 
