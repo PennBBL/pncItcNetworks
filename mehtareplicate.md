@@ -75,7 +75,8 @@ cluster.sh reads as below:
 ```
  #!/bin/bash #NO NEED TO QSUB THIS
 dir=/cbica/projects/pncitc
-bash grf_fslcluster.sh -i ${dir}/mehtareplicate/test.nii  -m ${dir}/mehtareplicate/cwas307/mask.nii.gz -t 3.09 -o ${dir}/mehtareplicate/cluster_output
+bash grf_fslcluster.sh -i ${dir}/mehtareplicate/test.nii #this was the "zstats_logk.nii.gz" within the log k file, just moved out and renamed
+-m ${dir}/mehtareplicate/cwas307/mask.nii.gz -t 3.09 -o ${dir}/mehtareplicate/cluster_output
 ```
 
 
