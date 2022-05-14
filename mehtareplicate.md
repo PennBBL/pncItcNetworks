@@ -304,6 +304,7 @@ FDR corrected z-values.
   `zfdr5 : age`
   
 
+**Changes: ran locally for n293 due to library difficulties on CBICA**
 
 ### 5. Vizualisation of Results - results pretty similar to first iteration, based off images in the notebooks in this repo
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before. 
