@@ -5,7 +5,7 @@ output: html_document
 ---
 #### Copied and modified from pncitc.md
 
-Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQA exclusions on them (all this information was from Pehlivanova .csvs). The code and .csvs for this are available at `cbica/projects/pncitc/samplerecreation`. All subsequent analyses will be run in `cbica/projects/pncitc/mehtareplicaten293`, with naming analogous to the file paths listed below for the n307 replication. I also moved the bblid_scanid .csv to demographics, and created a folder within subjectData called rest293 for the n = 293 replication.
+Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQA exclusions on them (all this information was from Pehlivanova .csvs). The code and .csvs for this are available at `cbica/projects/pncitc/samplerecreation`. All subsequent analyses were run in `cbica/projects/pncitc/mehtareplicaten293`, using the same steps as below in folder `mehtareplicaten293` - additionally, any new .csvs should be pointed to in the scripts in that directory. Any departure from the protocol for n307 will be noted here.  I also moved the bblid_scanid .csv to demographics, and created a folder within subjectData called rest293 for the n = 293 replication.
 
 The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used packages from the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
 
@@ -247,7 +247,8 @@ setwd('/cbica/projects/pncitc/mehtareplicate/regression/')
 
 Then chose to install [RNifti](https://rdrr.io/cran/RNifti/f/README.md) in a personal library, using mirror #78. Steps involved :
 1. install.packages("remotes")
-2. install_github("jonclayden/RNifti")
+2. install.packages("devtools")
+3. install_github("jonclayden/RNifti")
 
 Then I ran the rest of the script:
 ```
