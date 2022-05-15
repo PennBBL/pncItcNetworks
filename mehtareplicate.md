@@ -317,7 +317,7 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
-  _Note: had to use flchfiletype on the copeseed images, and move the .hdr and .img files into the mehtareplicate directory. Then, had to follow the same procedure for the copeseed mean images_
+  _Note: had to use flchfiletype on the copeseed images, and move the .hdr and .img files into the mehtareplicate directory - having the nifti and img in the same directory can cause an error. Then, had to follow the same procedure for the copeseed mean images_
   b. for mask1 (ran in iPython on CBICA): `notebook/flameomask1.ipynb`
   
   At the end of the script, I added these lines to write out each output to .html: 
