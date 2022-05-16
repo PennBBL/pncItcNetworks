@@ -373,7 +373,7 @@ corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam
 
 The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
- ** CHANGES FOR N293 - I realized the final manuscript used different code, so did not reproduce this step.**
+ **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this step.**
 
 
 
