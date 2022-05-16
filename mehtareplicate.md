@@ -317,7 +317,8 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
-  _Note: had to use flchfiletype on the copeseed images, and move the .hdr and .img files into the mehtareplicate directory - having the nifti and img in the same directory can cause an error. Then, had to follow the same procedure for the copeseed mean images_
+  _Note: had to use flchfiletype on the copeseed images, mask1and2_2mm.nii, mean copeseed images, and move the .hdr and .img files out/ remove them altogether - having the nifti and img in the same directory can cause an error._
+  
   b. for mask1 (ran in iPython on CBICA): `notebook/flameomask1.ipynb`
   
   At the end of the script, I added these lines to write out each output to .html: 
@@ -337,7 +338,6 @@ for x in viewim:
     ii+=1
     x.save_as_html("visualization"+str(ii)+".html")
   ```
-_Note: You have to use fslchfiletype to convert the output of mask2.run(), which is mask1and2_2mm.img and .hdr, to nifti. Then feed the path to this as the input of at.inputs.input_image_
 _Note: The test_vis folder uses the same code but with threshold 0 as those images are more similar to the ones in the manuscript_
 
 Images I generated were saved in `cbica/projects/pncitc/mehtareplicate/KMVis/full_cortical_vis` as AA(produced by Azees)or KM(me). They are numbered to correspond.
@@ -373,6 +373,7 @@ corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam
 
 The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
+ ** CHANGES FOR N293 - I realized the final manuscript used different code, so did not reproduce this step.**
 
 
 
