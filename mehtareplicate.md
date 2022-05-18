@@ -420,6 +420,7 @@ for i in $general;do
 3dROIstats -mask ~/templates/pnc_wm_prior_bin2mm.nii.gz -1DRformat -nomeanout -nzmean ${filepath}/Processed_Data/${bblIDs}/${SubDate_and_ID}/norm/		*_ODI_Std.nii.gz >>~/ODI_mean_wm.txt
 ```
 This generated the values I needed. 
+
 4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
 ```
 ddata=readRDS('~/Desktop/ITC/my_data.rds'). # replaced with .csv containing necessary info, i.e: age, bblid, scanid, relRMS, sex, age, logK, posmask values for cluster 1, posmask values for cluster 2, negativemask values for cluster 1, negative mask values for cluster2
