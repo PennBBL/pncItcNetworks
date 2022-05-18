@@ -376,7 +376,107 @@ The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also 
  
  **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this step.**
 
+### 5. Vizualisation of Results 
+
+1. I had to use the `zfdr2.nii.gz` as mask on all seed connectivity maps, eg: `121085_7602_connectivity_mask1Z_sm6.nii.gz` for both clusters. Then, I found the average of the z(r) values within those maps and plot them versus the delay discounting log(k) parameter available in hte `demographics.csv`.
+2. Azeez did positive and negative values separately, so first I thresholded all negative values/positive values into separate connectivity maps for both clusters. I navigated into `/cbica/projects/pncitc/mehtareplicaten293/seedcorrmaps/seed/mask1` for cluster 1 (or `mask2` for cluster 2). 
+3. I ran the following scripts: 
+```
+#/bin/bash
+FILES=$(ls *Z*)
+for f in $FILES
+do
+	fslmaths $f -uthr 0 negthresh_${f}
+	trimmed=$(basename negthresh_${f} .nii.gz)
+	fslchfiletype NIFTI_GZ ${trimmed}.img ${trimmed}.nii.gz
+	rm -rf *img* *hdr*
+	echo "Processed negthresh_${f}"  
+
+done
+```
+and 
+```
+#/bin/bash
+FILES=$(ls *Z*)
+for f in $FILES
+do
+	fslmaths $f -thr 0 posthresh_${f}
+	trimmed=$(basename posthresh_${f} .nii.gz)
+	fslchfiletype NIFTI_GZ ${trimmed}.img ${trimmed}.nii.gz
+	rm -rf *img* *hdr*
+	echo "Processed posthresh_${f}"  
+
+done
+```
+to produce images in the format `posthresh_116812_7087_connectivity_mask1Z_sm6.nii.gz` and `negthresh_112633_7573_connectivity_mask1Z_sm6.nii.gz`. Note that running the second script after the first accidentally generated posthresh_negthresh niftis, which I removed via `rm -rf`. 
+3. I then used the script below to pipe mean connectivity values to a text file:
+```
+general=/data/joy/BBL/tutorials/exampleData/AMICO_NODDI/raw/*/*
+
+for i in $general;do 
+	bblIDs=$(echo ${i}|cut -d'/' -f9 |sed s@'/'@' '@g);
+	SubDate_and_ID=$(echo ${i}|cut -d'/' -f10|sed s@'/'@' '@g|sed s@'x'@'x'@g)
+	filepath=$(echo ${i} | rev | cut -d'/' -f4- | rev )
+3dROIstats -mask ~/templates/pnc_wm_prior_bin2mm.nii.gz -1DRformat -nomeanout -nzmean ${filepath}/Processed_Data/${bblIDs}/${SubDate_and_ID}/norm/		*_ODI_Std.nii.gz >>~/ODI_mean_wm.txt
+```
+This generated the values I needed. 
+4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
+```
+ddata=readRDS('~/Desktop/ITC/my_data.rds'). # replaced with .csv containing necessary info, i.e: age, bblid, scanid, relRMS, sex, age, logK, posmask values for cluster 1, posmask values for cluster 2, negativemask values for cluster 1, negative mask values for cluster2
+library(visreg);
+postpjmask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
+postpjmask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
+
+#summary(postpjmask)
+pdf("mask1pos.pdf", width = 8, height = 8)
+imageplot<-visreg(postpjmask, "logk", 
+                   xlab="Log K", 
+                  ylab="Correlation",line=list(col="red",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "red"),
+                  fill=list(col=adjustcolor("red", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,ylim=c(-0.5,0.5),xlim=c(-9,-1) )
+
+negtpjmask=lm(mask1neg~age+sex+relMeanRMSmotion+logk,data=ddata)
+negtpjmask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
+#summary(postpjmask)
+pdf("mask1neg.pdf", width = 8, height = 8)
+imageplot<-visreg(negtpjmask, "logk", 
+                   xlab="Log K", 
+                  ylab="Correlation k",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"),
+                  fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
+
+posfrmask=lm(mask2pos~age+sex+relMeanRMSmotion+logk,data=ddata)
+posfrmask_nologk=lm(mask2pos~age+sex+relMeanRMSmotion,data=ddata)
+#summary(postpjmask)
+pdf("mask2pos.pdf", width = 8, height = 8)
+imageplot<-visreg(posfrmask, "logk", 
+                   xlab="Log K", 
+                  ylab="Correlation",line=list(col="red",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "red"),fill=list(col=adjustcolor("red", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
+
+negfrmask=lm(mask2neg~age+sex+relMeanRMSmotion+logk,data=ddata)
+negfrmask_nologk=lm(mask2neg~age+sex+relMeanRMSmotion,data=ddata)
+#summary(postpjmask)
+pdf("mask2neg.pdf", width = 8, height = 8)
+imageplot<-visreg(negfrmask, "logk", 
+                   xlab="Log K", 
+                  ylab="Correlation",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"), fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
 
 
+library(ggplot2)
+
+ylab<-"Correlation (ρ)"
+
+ddata$postpjresid<-postpjmask_nologk$residuals+mean(ddata$mask1pos)
+ggplot(ddata,aes(x=logk,y=postpjresid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8) +ylim(c(-0.438,0.3))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+
+
+ddata$negtpjresid<-negtpjmask_nologk$residuals+mean(ddata$mask1neg)
+
+ggplot(ddata,aes(x=logk,y=negtpjresid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.5,0.3))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+
+ddata$posfrresid<-posfrmask_nologk$residuals+mean(ddata$mask2pos)
+ggplot(ddata,aes(x=logk,y=posfrresid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8) +ylim(c(-0.32,0.64))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+
+ddata$negfrresid<-negfrmask_nologk$residuals+mean(ddata$mask2neg)
+ggplot(ddata,aes(x=logk,y=negfrresid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.65,0.43))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+```
 
  
