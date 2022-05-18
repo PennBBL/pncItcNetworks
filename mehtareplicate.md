@@ -409,15 +409,23 @@ do
 done
 ```
 to produce images in the format `posthresh_116812_7087_connectivity_mask1Z_sm6.nii.gz` and `negthresh_112633_7573_connectivity_mask1Z_sm6.nii.gz`. Note that running the second script after the first accidentally generated posthresh_negthresh niftis, which I removed via `rm -rf`. 
-3. I then used the script below to pipe mean connectivity values to a text file:
+3. I then used the script below to pipe mean connectivity values to a text file for cluster 2 (same method as for cluster 1):
 ```
-general=/data/joy/BBL/tutorials/exampleData/AMICO_NODDI/raw/*/*
+#/bin/bash
+general=$(ls *pos*)
 
-for i in $general;do 
-	bblIDs=$(echo ${i}|cut -d'/' -f9 |sed s@'/'@' '@g);
-	SubDate_and_ID=$(echo ${i}|cut -d'/' -f10|sed s@'/'@' '@g|sed s@'x'@'x'@g)
-	filepath=$(echo ${i} | rev | cut -d'/' -f4- | rev )
-3dROIstats -mask ~/templates/pnc_wm_prior_bin2mm.nii.gz -1DRformat -nomeanout -nzmean ${filepath}/Processed_Data/${bblIDs}/${SubDate_and_ID}/norm/		*_ODI_Std.nii.gz >>~/ODI_mean_wm.txt
+for i in $general;do
+        #$i>> $PWD/pos_mean_value.txt
+        echo $i
+        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/pos_mean_value_2.txt
+done
+general=$(ls *neg*)
+
+for i in $general;do
+        echo $i
+        #$i>> $PWD/neg_mean_value.txt
+        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/neg_mean_value_2.txt
+done
 ```
 This generated the values I needed. 
 
