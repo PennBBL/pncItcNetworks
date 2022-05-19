@@ -374,105 +374,9 @@ corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam
 
 The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
- **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this step.**
+ **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this visualation as part of the step.**
 
-### 5. Vizualisation of Results 
-
-1. I had to use the `zfdr2.nii.gz` as mask on all seed connectivity maps, eg: `121085_7602_connectivity_mask1Z_sm6.nii.gz` for both clusters. Then, I found the average of the z(r) values within those maps and plot them versus the delay discounting log(k) parameter available in hte `demographics.csv`.
-2. Azeez did positive and negative values separately, so first I thresholded all negative values/positive values into separate connectivity maps for both clusters. I navigated into `/cbica/projects/pncitc/mehtareplicaten293/seedcorrmaps/seed/mask1` for cluster 1 (or `mask2` for cluster 2). 
-3. I ran the following scripts: 
-```
-#/bin/bash
-FILES=$(ls *Z*)
-for f in $FILES
-do
-	fslmaths $f -uthr 0 negthresh_${f}
-	trimmed=$(basename negthresh_${f} .nii.gz)
-	fslchfiletype NIFTI_GZ ${trimmed}.img ${trimmed}.nii.gz
-	rm -rf *img* *hdr*
-	echo "Processed negthresh_${f}"  
-
-done
-```
-and 
-```
-#/bin/bash
-FILES=$(ls *Z*)
-for f in $FILES
-do
-	fslmaths $f -thr 0 posthresh_${f}
-	trimmed=$(basename posthresh_${f} .nii.gz)
-	fslchfiletype NIFTI_GZ ${trimmed}.img ${trimmed}.nii.gz
-	rm -rf *img* *hdr*
-	echo "Processed posthresh_${f}"  
-
-done
-```
-to produce images in the format `posthresh_116812_7087_connectivity_mask1Z_sm6.nii.gz` and `negthresh_112633_7573_connectivity_mask1Z_sm6.nii.gz`. Note that running the second script after the first accidentally generated posthresh_negthresh niftis, which I removed via `rm -rf`. 
-3. I then used the script below to pipe mean connectivity values to a text file for cluster 2 (same method as for cluster 1):
-```
-#/bin/bash
-general=$(ls *pos*)
-
-for i in $general;do
-        #$i>> $PWD/pos_mean_value.txt
-        echo $i
-        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/pos_mean_value_2.csv
-done
-general=$(ls *neg*)
-
-for i in $general;do
-        echo $i
-        #$i>> $PWD/neg_mean_value.txt
-        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/neg_mean_value_2.csv
-done
-```
-This generated the values I needed. I parsed them locally in Python using: 
-
-```
-import pandas as pd 
-
-df = pd.read_csv('/Users/kahinim/Desktop/neg_mean_value_2.csv', sep='\t')
-df = df.iloc[1::2]
-del df["Unnamed: 1"]
-del df["Unnamed: 2"]
-print (df)
-
-df.to_csv("/Users/kahinim/Desktop/pos_mean_2.csv", index = False)
-
-```
-
-followed by: 
-
-```
-import pandas as pd 
-path = '/Users/kahinim/Desktop/neg_mean_value_2.csv'
-df = pd.read_csv(path)
-
-import re
-  
-# Function to extract all the numbers from the given string
-def getNumbers(str):
-    array = re.findall(r'[0-9]+', str)
-    return array
-  
-
-bblids = []
-scanids = []
-for item in df["name"]:
-    bblids.append(getNumbers(item)[0])
-    scanids.append(getNumbers(item)[1])
-  
-df["bblid"] = bblids
-df["scanid"] = scanids
-print (df)
-
-df.to_csv(path, index = False)
-```
-
-to add BBLIDS/SCANIDS to the .csvs for easier merging later on. I also added these processed/parse files to the `dropbox`. 
-
-4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
+Instead, I used the following code from Adam and adapted it: 
 ```
 ddata=readRDS('~/Desktop/ITC/my_data.rds'). # replaced with .csv containing necessary info, i.e: age, bblid, scanid, relRMS, sex, age, logK, posmask values for cluster 1, posmask values for cluster 2, negativemask values for cluster 1, negative mask values for cluster2
 library(visreg);
@@ -531,4 +435,4 @@ ddata$negfrresid<-negfrmask_nologk$residuals+mean(ddata$mask2neg)
 ggplot(ddata,aes(x=logk,y=negfrresid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.65,0.43))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 ```
 
- 
+ _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' - these were part of a different approach we did not end up going with._
