@@ -417,17 +417,29 @@ general=$(ls *pos*)
 for i in $general;do
         #$i>> $PWD/pos_mean_value.txt
         echo $i
-        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/pos_mean_value_2.txt
+        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/pos_mean_value_2.csv
 done
 general=$(ls *neg*)
 
 for i in $general;do
         echo $i
         #$i>> $PWD/neg_mean_value.txt
-        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/neg_mean_value_2.txt
+        3dROIstats -mask_f2short -mask $PWD/logk/zfdrmask2/zfdr2.nii.gz -1DRformat -nzmean $i>> $PWD/neg_mean_value_2.csv
 done
 ```
-This generated the values I needed. 
+This generated the values I needed. I parsed them locally in Python using: 
+
+```
+import pandas as pd 
+
+df = pd.read_csv('/Users/kahinim/Desktop/neg_mean_value_2.csv', sep='\t')
+df = df.iloc[::2]
+del df["Unnamed: 1"]
+del df["Unnamed: 2"]
+print (df)
+
+df.to_csv("/Users/kahinim/Desktop/pos_mean_2.csv", index = False
+```
 
 4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
 ```
