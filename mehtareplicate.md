@@ -438,7 +438,7 @@ del df["Unnamed: 1"]
 del df["Unnamed: 2"]
 print (df)
 
-df.to_csv("/Users/kahinim/Desktop/pos_mean_2.csv", index = False
+df.to_csv("/Users/kahinim/Desktop/pos_mean_2.csv", index = False)
 ```
 
 4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
