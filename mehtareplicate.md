@@ -370,13 +370,15 @@ datap1=img1[p_m1==1]; datap2=img2[p_m2==1]
 datam1=img1[n_m1==1]; datam2=img2[n_m2==1]
 corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam2)
 ```
-
+ **Changes- For N293, the script ran perfectly as it was.**
 
 The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
  **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this visualation as part of the step.**
 
-Instead, I used the following code from Adam and adapted it: 
+Instead, I 
+1. Created a .csv merging the resting_state_QA data, n307 demographics, and the .csv generated from the above step for replicability purposes - this is in the `dropbox` as `n293_data_cluster_extraction.csv` . However, I used an .rds with the same info in the .csv called `my_data.rds`. 
+2. used the following code from Adam and adapted it: 
 ```
 ddata=readRDS('~/Desktop/ITC/my_data.rds'). # replaced with .csv containing necessary info, i.e: age, bblid, scanid, relRMS, sex, age, logK, posmask values for cluster 1, posmask values for cluster 2, negativemask values for cluster 1, negative mask values for cluster2
 library(visreg);
@@ -434,5 +436,6 @@ ggplot(ddata,aes(x=logk,y=posfrresid)) + geom_smooth(method = 'lm', colour=('#b4
 ddata$negfrresid<-negfrmask_nologk$residuals+mean(ddata$mask2neg)
 ggplot(ddata,aes(x=logk,y=negfrresid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.65,0.43))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 ```
+Naming will be inconsistent as the first cluster is no longer in the TPJ. 
 
  _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' - these were part of a different approach we did not end up going with._
