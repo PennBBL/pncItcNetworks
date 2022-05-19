@@ -470,7 +470,7 @@ print (df)
 df.to_csv(path, index = False)
 ```
 
-to add BBLIDS/SCANIDS to the .csvs for easier merging later on. I also added these files to the `dropbox`. 
+to add BBLIDS/SCANIDS to the .csvs for easier merging later on. I also added these processed/parse files to the `dropbox`. 
 
 4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
 ```
