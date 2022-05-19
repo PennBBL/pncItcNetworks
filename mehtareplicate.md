@@ -439,7 +439,38 @@ del df["Unnamed: 2"]
 print (df)
 
 df.to_csv("/Users/kahinim/Desktop/pos_mean_2.csv", index = False)
+
 ```
+
+followed by: 
+
+```
+import pandas as pd 
+path = '/Users/kahinim/Desktop/neg_mean_value_2.csv'
+df = pd.read_csv(path)
+
+import re
+  
+# Function to extract all the numbers from the given string
+def getNumbers(str):
+    array = re.findall(r'[0-9]+', str)
+    return array
+  
+
+bblids = []
+scanids = []
+for item in df["name"]:
+    bblids.append(getNumbers(item)[0])
+    scanids.append(getNumbers(item)[1])
+  
+df["bblid"] = bblids
+df["scanid"] = scanids
+print (df)
+
+df.to_csv(path, index = False)
+```
+
+to add BBLIDS/SCANIDS to the .csvs for easier merging later on.
 
 4. Then, using the `demographics.csv` as well as resting-state QA data from Pehlivanova et al in the `samplerecreation` folder, I was able to regenerate the graphs from the manuscript by adapting the following R code from Adam: 
 ```
