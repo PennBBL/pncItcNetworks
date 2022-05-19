@@ -343,7 +343,7 @@ _Note: The test_vis folder uses the same code but with threshold 0 as those imag
 
 Images I generated were saved in `cbica/projects/pncitc/mehtareplicate/KMVis/full_cortical_vis` as AA(produced by Azees)or KM(me). They are numbered to correspond.
 
-### 6. Regional plot of significant regions of logk - results pretty similar to first iteration
+### 6. Regional plot of significant regions of logk
  
  I did this step locally as the R libraries on CBICA were very out of date. 
  
