@@ -433,7 +433,7 @@ This generated the values I needed. I parsed them locally in Python using:
 import pandas as pd 
 
 df = pd.read_csv('/Users/kahinim/Desktop/neg_mean_value_2.csv', sep='\t')
-df = df.iloc[::2]
+df = df.iloc[1::2]
 del df["Unnamed: 1"]
 del df["Unnamed: 2"]
 print (df)
