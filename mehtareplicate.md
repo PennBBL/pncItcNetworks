@@ -443,4 +443,4 @@ ggsave('/Users/kahinim/Desktop/cluster2neg.png')
 ```
 Naming will be inconsistent as the first cluster is no longer in the TPJ. The outputs are in the format:  `cluster1neg.png`/`cluster2pos.png` , and I have put them in  `dropbox` on CBICA.
 
- _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' IN `mehtareplicaten293/...` if you seed them - these were part of a different approach we did not end up going with._
+ _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' IN `mehtareplicaten293/...` if you see them - these were part of a different approach we did not end up going with._
