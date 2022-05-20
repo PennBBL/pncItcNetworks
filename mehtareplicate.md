@@ -374,7 +374,7 @@ corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam
 
 The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
  
- **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this visualation as part of the step.**
+ **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this notebook visualization as part of the step.**
 
 Instead, I 
 1. Created a .csv merging the resting_state_QA data, n307 demographics, and the .csv generated from the above step for replicability purposes - this is in the `dropbox` as `n293_data_cluster_extraction.csv` . However, I used an .rds with the same info in the .csv called `my_data.rds`. 
