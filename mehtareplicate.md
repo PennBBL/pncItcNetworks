@@ -370,7 +370,7 @@ datap1=img1[p_m1==1]; datap2=img2[p_m2==1]
 datam1=img1[n_m1==1]; datam2=img2[n_m2==1]
 corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam2)
 ```
- **Changes- For N293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1. Finally, I generated the insets seen in the manuscript (these were the niftis written out, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.). My code for this part is as below, and all the files are in the `dropbox` under final_visualization**
+ **Changes- For N293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1. Finally, I generated the insets seen in the manuscript (these were the niftis written out, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.) These surface projections are in .html within `...mehtareplicaten293/Vis`. My code for this part is as below, and all the files are in the `dropbox` under final_visualization**
 
 ```
 library(RNifti)
