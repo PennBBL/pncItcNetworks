@@ -370,77 +370,122 @@ datap1=img1[p_m1==1]; datap2=img2[p_m2==1]
 datam1=img1[n_m1==1]; datam2=img2[n_m2==1]
 corrdata[1,]=c(#BBLID,#SCANID],mean(datap1),mean(datam1),mean(datap2),mean(datam2)
 ```
- **Changes- For N293, the script ran perfectly as it was.**
+ **Changes- For N293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1. Finally, I generated the insets seen in the manuscript (these were the niftis written out, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.). My code for this part is as below, and all the files are in the `dropbox` under final_visualization**
 
-The results were vizualised with `notebook/meanseedcorrelationplot.Rmd`. I also ran this locally, and compared my results (labelled KM) with Azeez's (labelled AA). These can be found at the path `cbica/projects/pncitc/mehtareplicate/KMVis`. They are numbered to correspond. 
- 
- **Changes- For N293, I realized the final manuscript used different code, so did not reproduce this notebook visualization as part of the step.**
-
-Instead, I 
-1. Created a .csv merging the resting_state_QA data, n307 demographics, and the .csv generated from the above step for replicability purposes - this is in the `dropbox` as `n293_data_cluster_extraction.csv` . However, I used an .rds with the same info in the .csv called `my_data.rds`. 
-2. Used the following code, adapted from Adam: 
 ```
+library(RNifti)
+library(pracma)
+
+setwd('/Users/kahinim/Desktop')
+
+# make the masks
+mask1=readNifti('1Zfiles/zfdr2.nii.gz')
+mask2=readNifti('2Zfiles/zfdr2.nii.gz')
+
+#get the  postive masks
+p_m1=mask1; p_m1[p_m1<1.64]=0
+p_m2=mask2; p_m2[p_m2<1.64]=0
+
+#get the negative masks
+n_m1=(-1)*mask1;  n_m1[n_m1<1.64]=0; n_m1 = (-1)*n_m1
+n_m2=(-1)*mask2;  n_m2[n_m2<1.64]=0; n_m2 = (-1)*n_m2
+
+writeNifti(p_m1, 'p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, 'n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m2, 'n_m2.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(p_m2, 'p_m2.nii.gz', template = NULL, datatype = "auto", version = 1)
+
+b=read.csv('n293_bblid_scanid.csv',header=FALSE)
+
+#make table 
+
+corrdata=zeros(293,6)
+
+for (i in 1:293) {
+  img1=readNifti(paste0('1Zfiles/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz'))
+  img2=readNifti(paste0('2Zfiles/',b[i,1],'_',b[i,2],'_connectivity_mask2Z_sm6.nii.gz'))
+  datap1=img1[p_m1!=0]; datap2=img2[p_m2!=0]
+  datam1=img1[n_m1!=0]; datam2=img2[n_m2!=0]
+  corrdata[i,]=c(b[i,1],b[i,2],mean(datap1),mean(datam1),mean(datap2),mean(datam2))
+}
+
+colnames(corrdata)=c('bblid','scanid','mask1pos','mask1neg','mask2pos','mask2neg')
+
+write.csv(corrdata,'n293_meanseedcorr.csv',quote = FALSE,row.names = FALSE)
+
+# merge CSV
+x = read.csv('n293_meanseedcorr.csv')
+y = read.csv('n307_demographics.csv') # demographics are right, when merged the n307 will become n293
+z = read.csv('n2416_RestQAData_20170714.csv')
+
+final1=merge(x,y, by=c('bblid','scanid')) # merge by Ids  
+final2=merge(final1,z, by=c('bblid','scanid')) # merge by Ids 
+write.csv(final2,'n293_data.csv',quote = FALSE,row.names = FALSE)
+
+# write as .rds
+saveRDS(final2, file = "my_data.RDS") 
+
+#start plotting
 ddata=readRDS('/Users/kahinim/Desktop/my_data.rds')
 library(visreg);
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
 poscluster1mask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
 
 #summary(postpjmask)
-svg("/Users/kahinim/Desktop/mask1pos.svg", width = 8, height = 8)
+#svg("/Users/kahinim/Desktop/mask1pos.svg", width = 8, height = 8)
 imageplot<-visreg(poscluster1mask, "logk", 
-                   xlab="Log K", 
+                  xlab="Log K", 
                   ylab="Correlation",line=list(col="red",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "red"),
                   fill=list(col=adjustcolor("red", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,ylim=c(-0.5,0.5),xlim=c(-9,-1) )
 
 negcluster1mask=lm(mask1neg~age+sex+relMeanRMSmotion+logk,data=ddata)
 negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
 #summary(postpjmask)
-svg("/Users/kahinim/Desktop/mask1neg.svg", width = 8, height = 8)
+#svg("/Users/kahinim/Desktop/mask1neg.svg", width = 8, height = 8)
 imageplot<-visreg(negcluster1mask, "logk", 
-                   xlab="Log K", 
+                  xlab="Log K", 
                   ylab="Correlation k",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"),
                   fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
 
 poscluster2mask=lm(mask2pos~age+sex+relMeanRMSmotion+logk,data=ddata)
 poscluster2mask_nologk=lm(mask2pos~age+sex+relMeanRMSmotion,data=ddata)
 #summary(postpjmask)
-svg("/Users/kahinim/Desktop/mask2pos.svg", width = 8, height = 8)
+#svg("/Users/kahinim/Desktop/mask2pos.svg", width = 8, height = 8)
 imageplot<-visreg(poscluster2mask, "logk", 
-                   xlab="Log K", 
+                  xlab="Log K", 
                   ylab="Correlation",line=list(col="red",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "red"),fill=list(col=adjustcolor("red", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
 
 negcluster2mask=lm(mask2neg~age+sex+relMeanRMSmotion+logk,data=ddata)
 negcluster2mask_nologk=lm(mask2neg~age+sex+relMeanRMSmotion,data=ddata)
 #summary(postpjmask)
-svg("/Users/kahinim/Desktop/mask2neg.svg", width = 8, height = 8)
+#svg("/Users/kahinim/Desktop/mask2neg.svg", width = 8, height = 8)
 imageplot<-visreg(negcluster2mask, "logk", 
-                   xlab="Log K", 
+                  xlab="Log K", 
                   ylab="Correlation",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"), fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
 
 
 library(ggplot2)
 
-ylab<-"Correlation (ρ)"
+ylab<-"Correlation (z(r))"
 
 ddata$poscluster1resid<-poscluster1mask_nologk$residuals+mean(ddata$mask1pos)
-ggplot(ddata,aes(x=logk,y=poscluster1resid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8) +ylim(c(-0.438,0.3))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+ggplot(ddata,aes(x=logk,y=poscluster1resid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 ggsave('/Users/kahinim/Desktop/cluster1pos.png')
 
 ddata$negcluster1resid<-negcluster1mask_nologk$residuals+mean(ddata$mask1neg)
 
-ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.5,0.3))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 
 ggsave('/Users/kahinim/Desktop/cluster1neg.png')
 
 ddata$poscluster2resid<-poscluster2mask_nologk$residuals+mean(ddata$mask2pos)
-ggplot(ddata,aes(x=logk,y=poscluster2resid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8) +ylim(c(-0.32,0.64))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+ggplot(ddata,aes(x=logk,y=poscluster2resid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 
 ggsave('/Users/kahinim/Desktop/cluster2pos.png')
 
 ddata$negcluster2resid<-negcluster2mask_nologk$residuals+mean(ddata$mask2neg)
-ggplot(ddata,aes(x=logk,y=negcluster2resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.65,0.43))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+ggplot(ddata,aes(x=logk,y=negcluster2resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 ggsave('/Users/kahinim/Desktop/cluster2neg.png')
-```
-Naming will be inconsistent as the first cluster is no longer in the TPJ. The outputs are in the format:  `cluster1neg.png`/`cluster2pos.png` , and I have put them in  `dropbox` on CBICA. Additionally, removing the ylim command to allow auto-fitting produces better figures in the ggplot code.
 
- _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' IN `mehtareplicaten293/...` if you see them - these were part of a different approach we did not end up going with._
+```
+ _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' in `mehtareplicaten293/...` if you see them - these were part of a different approach we did not end up going with._
