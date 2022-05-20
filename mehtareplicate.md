@@ -441,6 +441,6 @@ ddata$negcluster2resid<-negcluster2mask_nologk$residuals+mean(ddata$mask2neg)
 ggplot(ddata,aes(x=logk,y=negcluster2resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1) +ylim(c(-0.65,0.43))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 ggsave('/Users/kahinim/Desktop/cluster2neg.png')
 ```
-Naming will be inconsistent as the first cluster is no longer in the TPJ. The outputs are:` cluster1/2neg/pos.png`, and I have put them in the dropbox.
+Naming will be inconsistent as the first cluster is no longer in the TPJ. The outputs are in the format:  `cluster1neg.png`/`cluster2pos.png` , and I have put them in  `dropbox` on CBICA.
 
  _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' - these were part of a different approach we did not end up going with._
