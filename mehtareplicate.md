@@ -489,3 +489,106 @@ ggsave('/Users/kahinim/Desktop/cluster2neg.png')
 
 ```
  _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' in `mehtareplicaten293/...` if you see them - these were part of a different approach we did not end up going with._
+ 
+ ### 7. Final visualizations - missing from original pncitc.md
+ 
+ 1. Used this code on `cbica` to convert all niftis I would want to use for visualization: 
+```
+    ...: zstats=['zfdr1','zfdr2']
+    ...: viewim=[]
+    ...: for i in range(len(zstats)):
+    ...:     at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
+    ...:     at.inputs.output_image = flame1dir + zstats[i]+'MNI.nii.gz'
+    ...:     at.run()
+    ...: 
+    ...: flame2dir='/cbica/projects/pncitc/mehtareplicaten293/seedcorrmaps/seed/
+    ...: mask2/logk/zfdrmask2/'
+    ...: zstats=['zfdr1','zfdr2']
+    ...: viewim=[]
+    ...: for i in range(len(zstats)):
+    ...:     at.inputs.input_image = flame2dir + zstats[i]+'.nii.gz'
+    ...:     at.inputs.output_image = flame2dir + zstats[i]+'MNI.nii.gz'
+    ...:     at.run()
+    ...: 
+    ...: clusterdirectory = '/cbica/projects/pncitc/mehtareplicaten293/cluster_
+    ...: output/cluster_Z3.09'
+    ...: zstats=['/mask1/mask1_2mm','/mask2/mask2_2mm']
+    ...: for i in range(len(zstats)):
+    ...:     at.inputs.input_image = clusterdirectory + zstats[i]+'.nii.gz'
+    ...:     at.inputs.output_image = clusterdirectory + zstats[i]+'MNI.nii.gz'
+    ...:     at.run()
+```
+2. Downloaded pysurfer locally (this was extremely painful, but apparently setup differs on each device. I still wasn't able to view images via the renderer, and had to save them out.)
+3. Downloaded all the MNI space niftis converted in step 1... 
+4. Used the code below for visualization (changed minimum and maximum)
+
+```
+import os
+from surfer import Brain, project_volume_data #pysurfer imports as surfer
+
+print(__doc__)
+
+"""
+Bring up the visualization window.
+"""
+brain = Brain("fsaverage", "lh", "inflated", subjects_dir='/Users/kahinim/Desktop/freesurfer/subjects')
+
+"""
+Get a path to the volume file.
+"""
+volume_file = "/Users/kahinim/Desktop/zfdr2.nii.gz"
+
+"""
+There are two options for specifying the registration between the volume and
+the surface you want to plot on. The first is to give a path to a
+Freesurfer-style linear transformation matrix that will align the statistical
+volume with the Freesurfer anatomy.
+
+Most of the time you will be plotting data that are in MNI152 space on the
+fsaverage brain. For this case, Freesurfer actually ships a registration matrix
+file to align your data with the surface.
+"""
+reg_file = "/Users/kahinim/Desktop/freesurfer/average/mni152.register.dat"
+zstat = project_volume_data(volume_file, "lh", reg_file)
+
+"""
+Note that the contours of the fsaverage surface don't perfectly match the
+MNI brain, so this will only approximate the location of your activation
+(although it generally does a pretty good job). A more accurate way to
+visualize data would be to run the MNI152 brain through the recon-all pipeline.
+
+Alternatively, if your data are already in register with the Freesurfer
+anatomy, you can provide project_volume_data with the subject ID, avoiding the
+need to specify a registration file.
+
+By default, 3mm of smoothing is applied on the surface to clean up the overlay
+a bit, although the extent of smoothing can be controlled.
+"""
+#zstat = project_volume_data(volume_file, "lh",
+                            #subject_id="fsaverage", subjects_dir = "/Users/kahinim/Desktop/freesurfer",smooth_fwhm=0.5)
+
+"""
+Once you have the statistical data loaded into Python, you can simply pass it
+to the `add_overlay` method of the Brain object.
+"""
+
+brain.add_overlay(zstat, min=4, max=9)
+brain.show_view('med')
+brain.save_image('/Users/kahinim/Desktop/test1.png')
+brain.show_view('lat')
+brain.save_image('/Users/kahinim/Desktop/test2.png')
+brain.show_view('ros')
+brain.save_image('/Users/kahinim/Desktop/test3.png')
+brain.show_view('caud')
+brain.save_image('/Users/kahinim/Desktop/test4.png')
+#brain.save_imageset(brain, ['med', 'lat', 'ros', 'caud'], '.png')
+"""
+It can also be a good idea to plot the inverse of the mask that was used in the
+analysis, so you can be clear about areas that were not included.
+
+It's good to change some parameters of the sampling to account for the fact
+that you are projecting binary (0, 1) data.
+"""
+
+
+```
