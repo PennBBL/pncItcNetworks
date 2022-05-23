@@ -592,3 +592,79 @@ that you are projecting binary (0, 1) data.
 
 
 ```
+
+5. For the clusters, I used: 
+
+```
+import os
+from surfer import Brain, project_volume_data
+
+print(__doc__)
+
+"""
+Bring up the visualization window.
+"""
+brain = Brain("fsaverage", "rh", "inflated", subjects_dir='/Users/kahinim/Desktop/freesurfer/subjects')
+
+"""
+Get a path to the volume file.
+"""
+volume_file = "/Users/kahinim/Desktop/mask1/mask1MNI.nii.gz"
+
+"""
+There are two options for specifying the registration between the volume and
+the surface you want to plot on. The first is to give a path to a
+Freesurfer-style linear transformation matrix that will align the statistical
+volume with the Freesurfer anatomy.
+
+Most of the time you will be plotting data that are in MNI152 space on the
+fsaverage brain. For this case, Freesurfer actually ships a registration matrix
+file to align your data with the surface.
+"""
+reg_file = "/Users/kahinim/Desktop/freesurfer/average/mni152.register.dat"
+zstat = project_volume_data(volume_file, "rh", reg_file)
+
+"""
+Note that the contours of the fsaverage surface don't perfectly match the
+MNI brain, so this will only approximate the location of your activation
+(although it generally does a pretty good job). A more accurate way to
+visualize data would be to run the MNI152 brain through the recon-all pipeline.
+
+Alternatively, if your data are already in register with the Freesurfer
+anatomy, you can provide project_volume_data with the subject ID, avoiding the
+need to specify a registration file.
+
+By default, 3mm of smoothing is applied on the surface to clean up the overlay
+a bit, although the extent of smoothing can be controlled.
+"""
+"""
+Once you have the statistical data loaded into Python, you can simply pass it
+to the `add_overlay` method of the Brain object.
+"""
+mask_file = volume_file
+mask = project_volume_data(mask_file, "rh", subject_id="fsaverage",
+                           smooth_fwhm=1, projsum="max").astype(bool)
+mask = ~mask
+#mask = ~(mask)
+stat = mask 
+
+brain.add_overlay(stat, min = 0, max=1)
+brain.show_view('med')
+brain.save_image('/Users/kahinim/Desktop/test1.png')
+brain.show_view('ros')
+brain.save_image('/Users/kahinim/Desktop/test2.png')
+brain.show_view('caud')
+brain.save_image('/Users/kahinim/Desktop/test3.png')
+brain.show_view('lat')
+brain.save_image('/Users/kahinim/Desktop/test4.png')
+#brain.save_imageset(brain, ['med', 'lat', 'ros', 'caud'], '.png')
+"""
+It can also be a good idea to plot the inverse of the mask that was used in the
+analysis, so you can be clear about areas that were not included.
+
+It's good to change some parameters of the sampling to account for the fact
+that you are projecting binary (0, 1) data.
+"""
+```
+where the clusters were the masks I'd found in `cluster_Z309`.
+6. Finally, I repeated step 4 for the insets we generated in the previous part of the .md for uniformity in appearance of figures. 
