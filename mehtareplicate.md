@@ -668,3 +668,5 @@ that you are projecting binary (0, 1) data.
 ```
 where the clusters were the masks I'd found in `cluster_Z309`.
 6. Finally, I repeated step 4 for the insets we generated in the previous part of the .md for uniformity in appearance of figures. 
+
+I uploaded all these images to the dropbox under `manuscript_figures`
