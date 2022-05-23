@@ -492,7 +492,7 @@ ggsave('/Users/kahinim/Desktop/cluster2neg.png')
  
  ### 7. Final visualizations - missing from original pncitc.md, and n307 replications
  
- 1. Used this code on `cbica` to transform all niftis I would want to use for visualization to MNI space: 
+ 1. Used this code on `cbica` to transform all niftis I would want to use for visualization to MNI space (sourced again from Azeez's `flameomask.ipynb` under notebooks: 
 ```
     ...: zstats=['zfdr1','zfdr2']
     ...: viewim=[]
