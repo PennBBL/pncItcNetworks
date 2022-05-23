@@ -490,9 +490,9 @@ ggsave('/Users/kahinim/Desktop/cluster2neg.png')
 ```
  _Note: please ignore the 'mean_val_csvs', 'lthr.sh', 'uthr.sh', 'mean_val.sh' in `mehtareplicaten293/...` if you see them - these were part of a different approach we did not end up going with._
  
- ### 7. Final visualizations - missing from original pncitc.md
+ ### 7. Final visualizations - missing from original pncitc.md, and n307 replications
  
- 1. Used this code on `cbica` to convert all niftis I would want to use for visualization: 
+ 1. Used this code on `cbica` to transform all niftis I would want to use for visualization to MNI space: 
 ```
     ...: zstats=['zfdr1','zfdr2']
     ...: viewim=[]
