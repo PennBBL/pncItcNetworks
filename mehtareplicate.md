@@ -520,7 +520,7 @@ ggsave('/Users/kahinim/Desktop/cluster2neg.png')
 ```
 2. Downloaded pysurfer locally (this was extremely painful, but apparently setup differs on each device. I still wasn't able to view images via the renderer, and had to save them out.)
 3. Downloaded all the MNI space niftis converted in step 1... 
-4. Used the code below for visualization (changed minimum and maximum)
+4. Used the code below for visualization (changed minimum and maximum, but you can see the values I assigned at the bottom. These are based off what Azeez had in his manuscript)
 
 ```
 import os
