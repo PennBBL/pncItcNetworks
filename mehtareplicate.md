@@ -203,8 +203,8 @@ The output of cluster masks is at: `/cbica/projects/pncitc/mehtareplicaten293/cl
 Numbers obtained from the CSV slightly different than before, but ultimately a close replication (likely due to changes in software version): 
 | Cluster Index | Voxels | P | -log10(P) | MAX | MAX X (vox) | MAX Y (vox) | MAX Z (vox) | COG X (vox) | COG Y (vox) | COG Z (vox) |
 | ---- | ---- | ---- | ------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| 2 | 11 | 9.27E-05 | 4.03 | 3.54 | 30 | 44 | 30 | 30.9 | 43.9 | 30.4 |
-| 1 | 5 | 0.0228 | 1.64	 | 3.54 | 13 | 28 | 24 | 13.4 | 28.6 | 24.2 |
+| 2 | 11 | 2.46e-05 | 4.61 | 3.54 | 31 | 44 | 29 | 30.8 | 43.7 | 30.2 |
+| 1 | 5 | 0.036	| 1.44	| 3.54	| 13	| 39	| 25	| 12.6	| 38.8 | 25.8 |
 
 However, the output image of clusters produced was an .img and .hdr which needed to be turned into a nifti format, I used: 
 
