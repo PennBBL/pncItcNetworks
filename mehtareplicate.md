@@ -210,7 +210,7 @@ However, the output image of clusters produced was an .img and .hdr which needed
 
  ```fslchfiletype NIFTI_GZ cluster_Z3.09.img cluster_Z3.09.nii```
 
-Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images with "NaN" scales - in Mango, only one cluster was visible. Ultimately downloaded MRICRON to view images locally - this worked much better. 
+Notably, the images were very sparse and hard to see - if viewed in mrpeek, appeared to be empty images with "NaN" scales - in Mango, only one cluster was visible. Ultimately downloaded MRICRON to view images locally - this worked much better. I used a template of `/cbica/projects/pncitc/mehtareplicaten293/cluster_output/cluster_Z3.09/pnc_template_brain_2mm.nii.gz`
 
 
 
