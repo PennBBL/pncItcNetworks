@@ -54,6 +54,8 @@ pncit1$age=pncit1$ageAtScan/12
 write.csv(pncit1,'n294_demographics.csv',row.names = FALSE,quote = FALSE)
 ```
 
+### 1. CWAS-MDMR
+
 The computation of  CWASMDMR was  done with  `cwasmdr` singularity image (`/cbica/projects/pncitc/cwasmdmr.simg`). We used packages from the connectir project at [https://github.com/czarrar/connectir](https://github.com/czarrar/connectir)
 
 Distance matrix was first computed with the following script: 
