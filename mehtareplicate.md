@@ -974,6 +974,6 @@ It's good to change some parameters of the sampling to account for the fact
 that you are projecting binary (0, 1) data.
 """
 ```
-where the clusters were the masks I'd found in `cluster_Z309`.
+where the clusters were the MNI versions of the masks I'd found in `cluster_Z309`.
 
 I uploaded all these images to the `dropbox` under `manuscript_figures`
