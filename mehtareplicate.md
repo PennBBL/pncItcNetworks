@@ -650,10 +650,9 @@ ggsave('/cbica/projects/pncitc/ignore/cluster1neg.png')
  
  ### 7. Final visualizations - missing from original pncitc.md
  
-1. Downloaded all MNI-space files I wanted to visualize from CBICA.
+1. Downloaded all MNI-space files I wanted to visualize from CBICA. This is really just mask1 and zfdr2. 
 2. Downloaded pysurfer locally (this was extremely painful, but apparently setup differs on each device. I still wasn't able to view images via the renderer, and had to save them out instead)
-3. Downloaded all the MNI space niftis converted in step 1... 
-4. Used the code below for visualization (changed minimum and maximum, but you can see the values I assigned at the bottom of each image. These values are based off what Azeez had in his manuscript)
+3. Used the code below for visualization (changed minimum and maximum, but you can see the values I assigned at the bottom of each image. These values are based off what Azeez had in his draft)
 
 ```
 import os
