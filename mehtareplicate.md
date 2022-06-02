@@ -467,9 +467,9 @@ big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz
 
 #registration paramteters
 
-ref='~/MNI152_T1_2mm_brain.nii.gz'
-transform1='~/PNC-MNI_0Warp.nii.gz'
-transform2='~/PNC-MNI_1Affine.mat'
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
 at = ApplyTransforms()
 at.inputs.dimension = 3
 at.inputs.reference_image = ref
@@ -479,8 +479,7 @@ at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
 #register it to MNI template if not done already 
-at.inputs.input_image = m'~/mask1_2mm.nii.gz' 
-at.inputs.output_image = '~/mask1_2mmMNI.nii.gz'# remember to change to nifti and remove .img
+output_image = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09/mask1/mask1_2mmMNI.nii.gz'
 at.run()
 
 #put it on surface 
@@ -490,7 +489,7 @@ v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.001,vmax=.5,ti
 # plot of mean of seed-based correlation 
 
 # average of all subject 
-seedbasedir='~/seedcorrmaps/'
+seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmaps/'
 corrtm=['4Dcopeseed1'] # make sure to change to nifti and remove .img
 viewim=[]
 meanimage=MeanImage()
@@ -505,8 +504,7 @@ for i in range(len(corrtm)):
     img1=img.load_img(at.inputs.output_image)
     v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,vmax=0.5,title='mean of seed-based correlation' + ': mask' +str(i + 1 ),cmap='RdYlBu_r') 
     viewim.append(v)
-  
-  x.save_as_html("meanseedbasedcorr.html")
+x.save_as_html("meanseedbasedcorr.html")
  
 
 ```
