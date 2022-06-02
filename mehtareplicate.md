@@ -440,7 +440,7 @@ for i in range(len(zstats)):
     at.run()
 
     
-cluster_directory = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09'
+clusterdirectory = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09'
 zstats=['/mask1/mask1_2mm']
 for i in range(len(zstats)):
     at.inputs.input_image = clusterdirectory + zstats[i]+'.nii.gz'
