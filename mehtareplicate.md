@@ -492,14 +492,18 @@ for i in range(len(corrtm)):
     meanimage.inputs.out_file=seedbasedir +corrtm[i] + 'mean.nii.gz' 
     meanimage.run()
     os.system('fslchfiletype NIFTI_GZ 4Dcopeseed1mean.img 4Dcopeseed1mean.nii.gz')
-    rm -rf 4Dcopeseed1mean.hdr  4Dcopeseed1mean.img
+    os.system('rm -rf 4Dcopeseed1mean.hdr  4Dcopeseed1mean.img')
     at.inputs.input_image = meanimage.inputs.out_file
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
     img1=img.load_img(at.inputs.output_image)
     v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,vmax=0.5,title='mean of seed-based correlation' + ': mask' +str(i + 1 ),cmap='RdYlBu_r') 
     viewim.append(v)
-x.save_as_html("meanseedbasedcorr.html")
+    
+ii = 0    
+for x in viewim:
+  ii += 1
+  x.save_as_html("meanseedbasedcorr" + str(ii) + ".html")
  
 
 ```
@@ -534,19 +538,17 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-flame1dir='~/mask1/logk/'
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
 zstats=['zfdr1','zfdr2']
 label=['mean','logk']
 viewim=[]
 for i in range(len(zstats)):
-    at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
-    at.inputs.output_image = flame1dir + zstats[i]+'MNI.nii.gz' # this should already be done! If not remember to change to .nii from .img, and remove .img
-    at.run()
-    img1=img.load_img(at.inputs.output_image)
+    output_image = flame1dir + zstats[i]+'MNI.nii.gz' 
+    img1=img.load_img(output_image)
     v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap='RdYlBu_r') 
     viewim.append(v)
 
-  ii = 0
+ii = 0
 for x in viewim:
     ii+=1
     x.save_as_html("cluster"+str(ii)+".html")
@@ -566,13 +568,13 @@ Images I generated were saved in `/cbica/projects/pncitc/ignore/seedcorrmaps/see
  These surface projections are in .html within `.../ignore/Vis`. My code for this part is as below:
 
 ```
-library(RNifti)
-library(pracma)
-
-setwd('/Users/kahinim/Desktop')
-
+library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(pracma, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
 # make the masks
-mask1=readNifti('1Zfiles/zfdr2.nii.gz') # the fdr corrected flameo output for logk 
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/zfdr2.nii.gz') # the fdr corrected flameo output for logk 
 
 #get the  postive masks
 p_m1=mask1; p_m1[p_m1<1.64]=0
@@ -581,17 +583,17 @@ p_m1=mask1; p_m1[p_m1<1.64]=0
 n_m1=(-1)*mask1;  n_m1[n_m1<1.64]=0; n_m1 = (-1)*n_m1
 
 
-writeNifti(p_m1, 'p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
-writeNifti(n_m1, 'n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
 
-b=read.csv('n293_bblid_scanid.csv',header=FALSE)
+b=read.csv('/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv',header=FALSE)
 
 #make table 
 
 corrdata=zeros(293,4)
 
 for (i in 1:293) {
-  img1=readNifti(paste0('1Zfiles/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz')) # flameo output
+  img1=readNifti(paste0('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz')) # flameo output
   datap1=img1[p_m1!=0]
   datam1=img1[n_m1!=0]
   corrdata[i,]=c(b[i,1],b[i,2],mean(datap1),mean(datam1))
@@ -599,23 +601,22 @@ for (i in 1:293) {
 
 colnames(corrdata)=c('bblid','scanid','mask1pos','mask1neg')
 
-write.csv(corrdata,'n293_meanseedcorr.csv',quote = FALSE,row.names = FALSE)
+write.csv(corrdata,'/cbica/projects/pncitc/demographics/n293_meanseedcorr.csv',quote = FALSE,row.names = FALSE)
 
 # merge CSV
-x = read.csv('n293_meanseedcorr.csv')
-y = read.csv('n307_demographics.csv') # demographics are right, when merged the n307 will become n293
-z = read.csv('n2416_RestQAData_20170714.csv')
+x = read.csv('/cbica/projects/pncitc/demographics/n293_meanseedcorr.csv')
+y = read.csv('/cbica/projects/pncitc/demographics/n307_demographics.csv') # demographics are right, when merged the n307 will become n293
+z = read.csv('/cbica/projects/pncitc/demographics/n2416_RestQAData_20170714.csv')
 
 final1=merge(x,y, by=c('bblid','scanid')) # merge by Ids  
 final2=merge(final1,z, by=c('bblid','scanid')) # merge by Ids 
 write.csv(final2,'n293_data.csv',quote = FALSE,row.names = FALSE)
 
 # write as .rds
-saveRDS(final2, file = "my_data.RDS") 
+saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_data.RDS") 
 
 #start plotting
-ddata=readRDS('/Users/kahinim/Desktop/my_data.rds')
-library(visreg);
+ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
 poscluster1mask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
 
@@ -627,55 +628,29 @@ imageplot<-visreg(poscluster1mask, "logk",
 
 negcluster1mask=lm(mask1neg~age+sex+relMeanRMSmotion+logk,data=ddata)
 negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
-#svg("/Users/kahinim/Desktop/mask1neg.svg", width = 8, height = 8)
 imageplot<-visreg(negcluster1mask, "logk", 
                   xlab="Log K", 
                   ylab="Correlation k",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"),
                   fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
 
 
-library(ggplot2)
-
 ylab<-"Correlation (z(r))"
 
 ddata$poscluster1resid<-poscluster1mask_nologk$residuals+mean(ddata$mask1pos)
 ggplot(ddata,aes(x=logk,y=poscluster1resid)) + geom_smooth(method = 'lm', colour=('#b40101'), fill = "#ef1212",size=2,alpha=.8)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
-ggsave('/Users/kahinim/Desktop/cluster1pos.png')
+ggsave('/cbica/projects/pncitc/ignore/cluster1pos.png')
 
 ddata$negcluster1resid<-negcluster1mask_nologk$residuals+mean(ddata$mask1neg)
 
 ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour=('#0c3e6d'), fill = "#69abde",size=2,alpha=1)+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
 
-ggsave('/Users/kahinim/Desktop/cluster1neg.png')
+ggsave('/cbica/projects/pncitc/ignore/cluster1neg.png')
 ```
 
  
  ### 7. Final visualizations - missing from original pncitc.md
  
- 1. Used this code on `cbica` to transform all niftis I would want to use for visualization to MNI space (as done in step 6): 
-```
-    ...: zstats=['zfdr1','zfdr2']
-    ...: viewim=[]
-    ...: for i in range(len(zstats)):
-    ...:     at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
-    ...:     at.inputs.output_image = flame1dir + zstats[i]+'MNI.nii.gz'
-    ...:     at.run()
-    ...: 
-    ...: flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask2/'
-    ...: zstats=['zfdr1','zfdr2']
-    ...: viewim=[]
-    ...: for i in range(len(zstats)):
-    ...:     at.inputs.input_image = flame2dir + zstats[i]+'.nii.gz'
-    ...:     at.inputs.output_image = flame2dir + zstats[i]+'MNI.nii.gz'
-    ...:     at.run()
-    ...: 
-    ...: clusterdirectory = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09'
-    ...: zstats=['/mask1/mask1_2mm']
-    ...: for i in range(len(zstats)):
-    ...:     at.inputs.input_image = clusterdirectory + zstats[i]+'.nii.gz'
-    ...:     at.inputs.output_image = clusterdirectory + zstats[i]+'MNI.nii.gz'
-    ...:     at.run()
-```
+1. Downloaded all MNI-space files I wanted to visualize from CBICA.
 2. Downloaded pysurfer locally (this was extremely painful, but apparently setup differs on each device. I still wasn't able to view images via the renderer, and had to save them out instead)
 3. Downloaded all the MNI space niftis converted in step 1... 
 4. Used the code below for visualization (changed minimum and maximum, but you can see the values I assigned at the bottom of each image. These values are based off what Azeez had in his manuscript)
