@@ -807,7 +807,7 @@ brain.save_image('/Users/kahinim/Desktop/manuscript_figures_1cluster/clrhros.png
 brain.show_view('caud')
 brain.save_image('/Users/kahinim/Desktop/manuscript_figures_1cluster/clrhcaud.png')
 ```
-I uploaded all these images to the `dropbox` under `manuscript_figures_1cluster`
+I uploaded all these images to the `dropbox` under `manuscript_figures_1cluster`. These images were questionable compared to other ones - it also showed two clusters for mask1, which was incorrect verified by viewing in MRICRON, etc. 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
