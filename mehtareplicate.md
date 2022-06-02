@@ -356,15 +356,11 @@ In the directory, there are zvalues:
   `zstat5 : age`
 
 
-The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection`. For this, 
-1. I opened 'R' locally
-2. Changed mask.img in each of the `logk` files to .nii as before, using `fslchtype`
-3. Did:
-
+The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection` in R on CBICA. For this, 
 
 ```
 rm(list = ls())
-library(RNifti)
+library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 # for mask1 or seed1
 for (i in 1:5 ){  
     mask=readNifti('mask1/logk/mask.nii.gz')
@@ -486,7 +482,7 @@ v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.001,vmax=.5,ti
 # plot of mean of seed-based correlation 
 
 # average of all subject 
-seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmaps/'
+seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/'
 corrtm=['4Dcopeseed1'] # make sure to change to nifti and remove .img
 viewim=[]
 meanimage=MeanImage()
