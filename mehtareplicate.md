@@ -445,7 +445,7 @@ for i in range(len(zstats)):
 ```
 
  a. for clusters and mean of seed-based correlation: 
-_Note: had to use `flchfiletype` on the `copeseed` images, `mean copeseed` images, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error._
+_Note: had to use `flchfiletype` on the `copeseed` images before running the script, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error._
 ```
 # import all the requirements and hide warnings
 import warnings
@@ -489,8 +489,10 @@ meanimage=MeanImage()
 for i in range(len(corrtm)):
     meanimage.inputs.in_file=seedbasedir + corrtm[i]+ '.nii.gz'
     meanimage.inputs.dimension='T'
-    meanimage.inputs.out_file=seedbasedir +corrtm[i] + 'mean.nii.gz' # make sure to change to nifti and remove .img
+    meanimage.inputs.out_file=seedbasedir +corrtm[i] + 'mean.nii.gz' 
     meanimage.run()
+    os.system('fslchfiletype NIFTI_GZ 4Dcopeseed1mean.img 4Dcopeseed1mean.nii.gz')
+    rm -rf 4Dcopeseed1mean.hdr  4Dcopeseed1mean.img
     at.inputs.input_image = meanimage.inputs.out_file
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
