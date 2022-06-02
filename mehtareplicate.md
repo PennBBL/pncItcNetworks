@@ -646,8 +646,62 @@ ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour
 
 ggsave('/cbica/projects/pncitc/ignore/cluster1neg.png')
 ```
+Insets were finally visualized on CBICA via iPython using: 
 
- 
+```
+# import all the requirements and hide warnings
+import warnings
+warnings.filterwarnings("ignore")
+import os
+
+import nilearn.plotting as plott
+import nilearn.image as img
+from nilearn import datasets,surface
+import matplotlib.pyplot as plt
+from nipype.interfaces.ants import ApplyTransforms
+
+big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
+
+#registration paramteters
+
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
+at = ApplyTransforms()
+at.inputs.dimension = 3
+at.inputs.reference_image = ref
+at.inputs.interpolation = 'NearestNeighbor'
+at.inputs.default_value = 0
+at.inputs.transforms = [transform1, transform2]
+at.inputs.invert_transform_flags = [False, False]
+
+dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
+masks=['n_m1', 'p_m1']
+mask = masks
+for i in range(len(masks)):
+    at.inputs.input_image = dir + masks[i]+'.nii.gz'
+    at.inputs.output_image = dir + masks[i]+'MNI.nii.gz'
+    img2 = mask[i]+'.img'
+    nii = mask[i]+'.nii.gz'
+    os.system('fslchfiletype NIFTI_GZ ' + img2 + ' ' + nii)
+    os.system('rm -rf *img')
+    at.run()
+
+viewim=[]
+label = ['neg','pos']
+
+for i in range(len(masks)):
+  output_image = dir + masks[i]+'MNI.nii.gz'
+  img1=img.load_img(output_image)
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap='RdYlBu_r') 
+  viewim.append(v)
+
+ii = 0
+for x in viewim:
+  ii+=1
+  x.save_as_html('inset'+str(ii)+'.html')
+
+```
  ### 7. Final visualizations - missing from original pncitc.md
  
 1. Downloaded allfiles I wanted to visualize from CBICA. This is really just mask1_2mm and zfdr2 - already created. Additionally, downloading the freesurfer library helps (see [https://surfer.nmr.mgh.harvard.edu/fswiki/rel7downloads](https://surfer.nmr.mgh.harvard.edu/fswiki/rel7downloads))
