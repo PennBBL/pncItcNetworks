@@ -478,12 +478,9 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-#register it to MNI template if not done already 
 output_image = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09/mask1/mask1_2mmMNI.nii.gz'
-at.run()
-
 #put it on surface 
-img1=img.load_img(at.inputs.output_image)
+img1=img.load_img(output_image)
 v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.001,vmax=.5,title='clusters',cmap='RdYlBu_r') 
 
 # plot of mean of seed-based correlation 
