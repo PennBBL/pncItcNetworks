@@ -620,20 +620,6 @@ ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
 poscluster1mask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
 
-#svg("/Users/kahinim/Desktop/mask1pos.svg", width = 8, height = 8)
-imageplot<-visreg(poscluster1mask, "logk", 
-                  xlab="Log K", 
-                  ylab="Correlation",line=list(col="red",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "red"),
-                  fill=list(col=adjustcolor("red", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,ylim=c(-0.5,0.5),xlim=c(-9,-1) )
-
-negcluster1mask=lm(mask1neg~age+sex+relMeanRMSmotion+logk,data=ddata)
-negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
-imageplot<-visreg(negcluster1mask, "logk", 
-                  xlab="Log K", 
-                  ylab="Correlation k",line=list(col="blue",lwd=4),overlay=TRUE,rug = FALSE,points.par = list(pch =16, cex = 1, col = "blue"),
-                  fill=list(col=adjustcolor("blue", alpha.f = 0.5)), cex.axis=1.5,cex.lab=1.5,xlim=c(-10,0),ylim=c(-.8,.8) )
-
-
 ylab<-"Correlation (z(r))"
 
 ddata$poscluster1resid<-poscluster1mask_nologk$residuals+mean(ddata$mask1pos)
