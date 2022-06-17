@@ -689,7 +689,15 @@ for x in viewim:
 
 ```
 
+Finally, for the cluster image, I locally ran this on the mask1 in MNI: 
 
+```
+from nilearn import plotting
+import nibabel as nib
+
+stat_map_img = '/Users/kahinim/Desktop/mask1MNI.nii.gz'
+plotting.plot_glass_brain(stat_map_img, output_file='/Users/kahinim/Desktop/test.png', display_mode='ortho', colorbar=False, figure=None, axes=None, title=None, threshold='auto', annotate=True, black_bg=False, cmap=None, alpha=0.7, vmin=None, vmax=None, plot_abs=True, symmetric_cbar='auto', resampling_interpolation='continuous')
+```
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
