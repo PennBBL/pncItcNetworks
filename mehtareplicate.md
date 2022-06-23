@@ -51,9 +51,9 @@ pncit1=pncit1[-which(pncit1$bblid==96832),]
 ids=data.frame(pncit1$bblid,pncit1$scanid) # get bblid and scanid for futher analyses 
 
 # write out demographics and bblid and scanid
-write.csv(ids,'n294_blbid_scanid.csv',row.names = FALSE,quote = FALSE)
+write.csv(ids,'n293_blbid_scanid.csv',row.names = FALSE,quote = FALSE)
 pncit1$age=pncit1$ageAtScan/12
-write.csv(pncit1,'n294_demographics.csv',row.names = FALSE,quote = FALSE)
+write.csv(pncit1,'n293_demographics.csv',row.names = FALSE,quote = FALSE)
 ```
 
 ### 1. CWAS-MDMR
