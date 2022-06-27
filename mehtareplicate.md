@@ -4,7 +4,7 @@ authors: Kahini
 output: html_document
 ---
 
-Working draft of manuscript available [here]([https://docs.google.com/document/d/1zxtCFqp-8m46C0Al7LhRQeBWoTX5PBvJ/edit#](https://pennmedicine-my.sharepoint.com/:w:/g/personal/mehtaka_pennmedicine_upenn_edu/EYQ3g-ZToTBIrHMRHbJOajQB2A3rNIw5Q6ZevzlrSnpm5Q?e=mogipi)).
+Working draft of manuscript available [here](https://1drv.ms/w/s!AuSorflzkw2siWlBi8ibxMcPUZri?e=Lu8v9j).
 
 #### _This markdown has been copied and modified from pncitc.md_
 
