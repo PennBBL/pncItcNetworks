@@ -6,7 +6,7 @@ output: html_document
 
 Working draft of manuscript available [here](https://docs.google.com/document/d/1zxtCFqp-8m46C0Al7LhRQeBWoTX5PBvJ/edit#)
 
-#### Copied and modified from pncitc.md
+#### This markdown has been copied and modified from pncitc.md
 
 Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQA exclusions on them (all this information was from Pehlivanova .csvs). The code and .csvs for this are available at `cbica/projects/pncitc/samplerecreation`. All final analyses were run in `cbica/projects/pncitc/ignore` (yes, pretty poorly named, but this was initially just a safety check), using the same steps as below  - additionally, any new .csvs should be pointed to in the scripts in that directory. I also moved the bblid_scanid .csv to demographics, and created a folder within subjectData called rest293 for the n = 293 replication.
 **Results were similar in N293 for the second cluster, things changed for the first cluster. Visualizations are available in the .html format within ignore**
