@@ -700,6 +700,30 @@ import nibabel as nib
 stat_map_img = '/Users/kahinim/Desktop/mask1MNI.nii.gz'
 plotting.plot_glass_brain(stat_map_img, output_file='/Users/kahinim/Desktop/test.png', display_mode='ortho', colorbar=False, figure=None, axes=None, title=None, threshold='auto', annotate=True, black_bg=False, cmap=None, alpha=0.7, vmin=None, vmax=None, plot_abs=True, symmetric_cbar='auto', resampling_interpolation='continuous')
 ```
+### 7. logk by sex/age interaction
+
+1. I copy-pasted the `cwas293` folder as `cwas293age` or `cwas293sex` for the interaction results to be written into...
+2. I re-ran the mdmr script using the formula `logk*sex` or `logk*age`, keeping other parameters the same.  Here are the scripts:
+
+```
+# sex
+
+#!/bin/bash
+#$ -l h_vmem=300G
+#$ -l tmpfree=300G
+singularity exec -e -B /cbica/projects/pncitc  \
+/cbica/projects/pncitc/cwasmdmr.simg \
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_sex
+
+# age
+#!/bin/bash
+#$ -l h_vmem=300G
+#$ -l tmpfree=300G
+singularity exec -e -B /cbica/projects/pncitc  \
+/cbica/projects/pncitc/cwasmdmr.simg \
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293age -f 'logk*age' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_age
+```
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
