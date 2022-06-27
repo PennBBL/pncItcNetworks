@@ -723,7 +723,19 @@ singularity exec -e -B /cbica/projects/pncitc  \
 /cbica/projects/pncitc/cwasmdmr.simg \
 /usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293age -f 'logk*age' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_age
 ```
+3. For clustering, I created two directories: `cluster_output_age` and `cluster_output_sex`. The scripts I used for clustering were as below: 
+```
+# for sex
+#!/bin/bash # NO NEED TO QSUB
+dir=/cbica/projects/pncitc
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_sex/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293sex/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_sex
 
+#for age
+#!/bin/bash # NO NEED TO QSUB
+dir=/cbica/projects/pncitc
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
+```
+4. No clusters found!
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
