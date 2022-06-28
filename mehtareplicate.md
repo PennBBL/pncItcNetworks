@@ -525,11 +525,17 @@ Images I generated were saved in `/cbica/projects/pncitc/ignore` in the .html fo
 
 ### 6. Regional plot of significant regions of logk
  
+First, I threshold zstat2 or the logk map at 3.09 like this: 
+```
+ cluster --in=zstat2.nii.gz --thresh=3.09 --othresh=3.09zstat2.nii.gz
+ fslchfiletype NIFTI_GZ 3.09zstat2.img 3.09zstat2.nii.gz
+ rm -rf 3.09zstat2.img 3.09zstat2.hdr
+ ```
+ 
 For n=293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
  
- Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally. 
- 
-Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
+Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally:
+
 
 ```
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
@@ -539,7 +545,7 @@ library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
 # make the masks
-mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zstat2.nii.gz') 
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/3.09zstat2.nii.gz') 
 
 #get the  postive masks
 p_m1=mask1; p_m1[p_m1<1.64]=0
@@ -597,7 +603,8 @@ ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour
 
 ggsave('/cbica/projects/pncitc/ignore/cluster1neg.png')
 ```
-Insets were finally visualized on CBICA via iPython using: 
+ 
+Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
 
 ```
 # import all the requirements and hide warnings
@@ -644,7 +651,7 @@ label = ['neg','pos']
 for i in range(len(masks)):
   output_image = dir + masks[i]+'MNI.nii.gz'
   img1=img.load_img(output_image)
-  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
   viewim.append(v)
 
 ii = 0
