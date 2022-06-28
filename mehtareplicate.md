@@ -361,48 +361,6 @@ In the directory, there are zvalues:
   `zstat5 : age`
 
 
-The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection` in R on CBICA. For this, 
-
-```
-rm(list = ls())
-library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
-# for mask1 or seed1
-for (i in 1:5 ){  
-    mask=readNifti('mask1/logk/mask.nii.gz')
-    z1=readNifti(paste0('mask1/logk/zstat',i,'.nii.gz'))
-    Z=z1[mask==1]
-    p <- 2*pnorm((-abs(Z)))
-    p1=p.adjust(p, method = 'fdr')
-    zvals = qnorm(1 - (p1/2)) 
-    zvals[zvals==Inf]=10
-    Z[Z>0]=1; Z[Z<0]=-1
-    zm=mask
-    zm[mask==1]=zvals*Z
-    writeNifti(zm,paste0('mask1/logk/zfdr',i,'.nii.gz'),template = mask)
-}
-
-
-```
-
-
-The outputs are located here:
-
-`/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1`
-
-FDR corrected z-values. 
-
-  `zfdr1 : average `
-
-  `zfdr2 : logk `
-
-  `zfdr3 : sex`
-
-  `zfdr4 : motion`
-
-  `zfdr5 : age`
-  
-
-
 ### 5. Vizualisation of Results - iPython in CBICA
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before as below: 
 
@@ -432,8 +390,8 @@ at.inputs.interpolation = 'NearestNeighbor'
 at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
-flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
-zstats=['zfdr1','zfdr2']
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
+zstats=['zstat1','zstat2']
 viewim=[]
 for i in range(len(zstats)):
     at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
@@ -543,8 +501,8 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
-zstats=['zfdr1','zfdr2']
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
+zstats=['zstat1','zstat2']
 label=['mean','logk']
 viewim=[]
 for i in range(len(zstats)):
@@ -579,7 +537,7 @@ library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
 # make the masks
-mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/zfdr2.nii.gz') # the fdr corrected flameo output for logk 
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zstat2.nii.gz') 
 
 #get the  postive masks
 p_m1=mask1; p_m1[p_m1<1.64]=0
@@ -588,8 +546,8 @@ p_m1=mask1; p_m1[p_m1<1.64]=0
 n_m1=(-1)*mask1;  n_m1[n_m1<1.64]=0; n_m1 = (-1)*n_m1
 
 
-writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
-writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
 
 b=read.csv('/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv',header=FALSE)
 
@@ -666,7 +624,7 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
+dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk'
 masks=['n_m1', 'p_m1']
 mask = masks
 for i in range(len(masks)):
