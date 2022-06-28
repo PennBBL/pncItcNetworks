@@ -362,10 +362,12 @@ In the directory, there are zvalues:
 
 
 ### 5. Vizualisation of Results - iPython in CBICA
-#### I used a different cmap/colormap for the manuscript in all cases where .html files were saved out - this was a later change, and not reflected in the files on CBICA; cmaps can be replaced with a variety of [colors, see here](https://matplotlib.org/stable/tutorials/colors/colormaps.html). The cmaps can be coded for instance like this: 
+#### I used a different cmap/colormap for the manuscript in all cases where .html files were saved out - this was a later change, and not reflected in the files on CBICA; cmaps can be replaced with a variety of colors, see [here](https://matplotlib.org/stable/tutorials/colors/colormaps.html). The cmaps can be coded for instance like this: 
 
 
-```v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap = 'RdBu') 
+```
+v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap = 'RdBu') 
+
  ```
 
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before as below: 
