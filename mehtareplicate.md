@@ -462,7 +462,7 @@ for i in range(len(corrtm)):
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
     img1=img.load_img(at.inputs.output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for mean seed corr
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) # for mean seed corr
 
     viewim.append(v)
     
@@ -700,6 +700,12 @@ dir=/cbica/projects/pncitc
 bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
 ```
 4. Found a cluster for `logk*sex` in dmPFC, similar to other cluster we found!
+
+#### ANALYZING THE INTERACTION CLUSTER
+
+
+
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
