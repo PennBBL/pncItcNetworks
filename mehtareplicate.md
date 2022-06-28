@@ -107,7 +107,7 @@ Memory and formatting were the main problems with these scripts not running well
 The cluster analysis was computed  with the script `scripts/grf_fslcluster.sh`, written based on  [FSL cluster analysis](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Cluster) with  Gaussian Random Field (GRF) theory
 
 The script `scripts/cluster.sh` called grf_fslcluster.sh, as listed in this repo under scripts, with `z=3.09`
-Two clusters were obtained: one at the at the frontal region the order at the TPJ. 
+One STABLE cluster at dMPFC was found. The second cluster changed location or did not appear across locations. 
 
 cluster.sh reads as below:
 ```
