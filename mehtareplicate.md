@@ -582,7 +582,7 @@ saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_data.RDS")
 #start plotting
 ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
-poscluster1mask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
+negcluster1mask=lm(mask1neg~logk+age+sex+relMeanRMSmotion,data=ddata)
 
 ylab<-"Correlation (z(r))"
 
@@ -697,7 +697,7 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_sex/zstats_logk.nii.gz  
 dir=/cbica/projects/pncitc
 bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
 ```
-4. No clusters found!
+4. Found a cluster for `logk*sex` in dmPFC, similar to other cluster we found!
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
