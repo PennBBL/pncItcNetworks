@@ -467,7 +467,7 @@ for i in range(len(corrtm)):
 ii = 0    
 for x in viewim:
   ii += 1
-  x.save_as_html("meanseedbasedcorr" + str(ii) + ".html")
+  x.save_as_html("/cbica/projects/pncitc/ignore/meanseedbasedcorr" + str(ii) + ".html")
  
 
 ```
@@ -515,7 +515,7 @@ for i in range(len(zstats)):
 ii = 0
 for x in viewim:
     ii+=1
-    x.save_as_html("cluster"+str(ii)+".html")
+    x.save_as_html("/cbica/projects/pncitc/ignore/cluster"+str(ii)+".html")
   ```
 
 
