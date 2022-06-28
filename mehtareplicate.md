@@ -366,7 +366,9 @@ In the directory, there are zvalues:
 
 
 ```
-v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,title='zstat :'+label[i],cmap = 'coolwarm', cbar=HORIZONTAL, symmetric_cbar=True) 
+v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,title='zstat :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for all images other than mean seed corr
+
+v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',title='zstat :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for mean seed corr
 
  ```
 
