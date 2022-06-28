@@ -535,6 +535,7 @@ Finally, I generated the insets seen in the manuscript (these were the niftis wr
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(pracma, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
 # make the masks
