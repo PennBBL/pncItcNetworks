@@ -523,11 +523,11 @@ Images I generated were saved in `/cbica/projects/pncitc/ignore` in the .html fo
 
 ### 6. Regional plot of significant regions of logk
  
- I did this step locally as the R libraries on CBICA were very out of date. For N293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
+For n=293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
  
  Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally. 
  
- Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
+Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
  
  These surface projections are in .html within `.../ignore/Vis`. My code for this part is as below:
 
