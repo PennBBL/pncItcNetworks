@@ -421,6 +421,7 @@ from nilearn import datasets,surface
 import matplotlib.pyplot as plt
 from nipype.interfaces.ants import ApplyTransforms
 from nipype.interfaces.fsl import MultiImageMaths,maths, MeanImage
+import os
 
 big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
 
@@ -518,7 +519,7 @@ for x in viewim:
   ```
 
 
-Images I generated were saved in `/cbica/projects/pncitc/ignore/seedcorrmaps/seed` in the .html format. 
+Images I generated were saved in `/cbica/projects/pncitc/ignore` in the .html format. 
 
 ### 6. Regional plot of significant regions of logk
  
