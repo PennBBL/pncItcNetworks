@@ -4,13 +4,16 @@ authors: Kahini
 output: html_document
 ---
 
-Most recent version of manuscript available [here](https://docs.google.com/document/d/1zxtCFqp-8m46C0Al7LhRQeBWoTX5PBvJ/edit#)
-#### Copied and modified from pncitc.md
+Working draft of manuscript available [here](https://1drv.ms/w/s!AuSorflzkw2siWlBi8ibxMcPUZri?e=Lu8v9j).
 
-Sample replication: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQA exclusions on them (all this information was from Pehlivanova .csvs). The code and .csvs for this are available at `cbica/projects/pncitc/samplerecreation`. All final analyses were run in `cbica/projects/pncitc/ignore` (yes, pretty poorly named, but this was initially just a safety check), using the same steps as below  - additionally, any new .csvs should be pointed to in the scripts in that directory. I also moved the bblid_scanid .csv to demographics, and created a folder within subjectData called rest293 for the n = 293 replication.
+#### _This markdown has been copied and modified from pncitc.md_
+
+Notes: n307 did not exclude those with the `health_exclude` criteria. Analyses were re-run on n293, using Pehlivanova et al's n427 sample and then running restQA exclusions on them (all this information was from Pehlivanova .csvs). The code and .csvs for this are available at `cbica/projects/pncitc/samplerecreation`. All final analyses were run in `cbica/projects/pncitc/ignore` (yes, pretty poorly named, but this was initially just a safety check), using the same steps as below  - additionally, any new .csvs should be pointed to in the scripts in that directory. I also moved the bblid_scanid .csv to demographics, and created a folder within subjectData called rest293 for the n = 293 replication.
 **Results were similar in N293 for the second cluster, things changed for the first cluster. Visualizations are available in the .html format within ignore**
 
 Additionally: "~/" means that the path must be supplied by the user. 
+
+### Sample replication
 
 The code for sample replication is: 
 
@@ -51,9 +54,9 @@ pncit1=pncit1[-which(pncit1$bblid==96832),]
 ids=data.frame(pncit1$bblid,pncit1$scanid) # get bblid and scanid for futher analyses 
 
 # write out demographics and bblid and scanid
-write.csv(ids,'n294_blbid_scanid.csv',row.names = FALSE,quote = FALSE)
+write.csv(ids,'n293_blbid_scanid.csv',row.names = FALSE,quote = FALSE)
 pncit1$age=pncit1$ageAtScan/12
-write.csv(pncit1,'n294_demographics.csv',row.names = FALSE,quote = FALSE)
+write.csv(pncit1,'n293_demographics.csv',row.names = FALSE,quote = FALSE)
 ```
 
 ### 1. CWAS-MDMR
@@ -358,48 +361,6 @@ In the directory, there are zvalues:
   `zstat5 : age`
 
 
-The zstats  were FDR corrected with this script `scripts/flameoutputfdrcorrection` in R on CBICA. For this, 
-
-```
-rm(list = ls())
-library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
-# for mask1 or seed1
-for (i in 1:5 ){  
-    mask=readNifti('mask1/logk/mask.nii.gz')
-    z1=readNifti(paste0('mask1/logk/zstat',i,'.nii.gz'))
-    Z=z1[mask==1]
-    p <- 2*pnorm((-abs(Z)))
-    p1=p.adjust(p, method = 'fdr')
-    zvals = qnorm(1 - (p1/2)) 
-    zvals[zvals==Inf]=10
-    Z[Z>0]=1; Z[Z<0]=-1
-    zm=mask
-    zm[mask==1]=zvals*Z
-    writeNifti(zm,paste0('mask1/logk/zfdr',i,'.nii.gz'),template = mask)
-}
-
-
-```
-
-
-The outputs are located here:
-
-`/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1`
-
-FDR corrected z-values. 
-
-  `zfdr1 : average `
-
-  `zfdr2 : logk `
-
-  `zfdr3 : sex`
-
-  `zfdr4 : motion`
-
-  `zfdr5 : age`
-  
-
-
 ### 5. Vizualisation of Results - iPython in CBICA
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before as below: 
 
@@ -429,8 +390,8 @@ at.inputs.interpolation = 'NearestNeighbor'
 at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
-flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
-zstats=['zfdr1','zfdr2']
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
+zstats=['zstat1','zstat2']
 viewim=[]
 for i in range(len(zstats)):
     at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
@@ -460,6 +421,7 @@ from nilearn import datasets,surface
 import matplotlib.pyplot as plt
 from nipype.interfaces.ants import ApplyTransforms
 from nipype.interfaces.fsl import MultiImageMaths,maths, MeanImage
+import os
 
 big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
 
@@ -499,13 +461,13 @@ for i in range(len(corrtm)):
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
     img1=img.load_img(at.inputs.output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,vmax=0.5,title='mean of seed-based correlation' + ': mask' +str(i + 1 ),cmap='RdYlBu_r') 
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,vmax=0.5,title='mean of seed-based correlation' + ': mask' +str(i + 1 )) 
     viewim.append(v)
     
 ii = 0    
 for x in viewim:
   ii += 1
-  x.save_as_html("meanseedbasedcorr" + str(ii) + ".html")
+  x.save_as_html("/cbica/projects/pncitc/ignore/meanseedbasedcorr" + str(ii) + ".html")
  
 
 ```
@@ -540,43 +502,42 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
-zstats=['zfdr1','zfdr2']
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
+zstats=['zstat1','zstat2']
 label=['mean','logk']
 viewim=[]
 for i in range(len(zstats)):
     output_image = flame1dir + zstats[i]+'MNI.nii.gz' 
     img1=img.load_img(output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap='RdYlBu_r') 
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i]) 
     viewim.append(v)
 
 ii = 0
 for x in viewim:
     ii+=1
-    x.save_as_html("cluster"+str(ii)+".html")
+    x.save_as_html("/cbica/projects/pncitc/ignore/cluster"+str(ii)+".html")
   ```
 
 
-Images I generated were saved in `/cbica/projects/pncitc/ignore/seedcorrmaps/seed` in the .html format. 
+Images I generated were saved in `/cbica/projects/pncitc/ignore` in the .html format. 
 
 ### 6. Regional plot of significant regions of logk
  
- I did this step locally as the R libraries on CBICA were very out of date. For N293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
+For n=293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
  
  Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally. 
  
- Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
- 
- These surface projections are in .html within `.../ignore/Vis`. My code for this part is as below:
+Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
 
 ```
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(pracma, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
 # make the masks
-mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/zfdr2.nii.gz') # the fdr corrected flameo output for logk 
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zstat2.nii.gz') 
 
 #get the  postive masks
 p_m1=mask1; p_m1[p_m1<1.64]=0
@@ -585,8 +546,8 @@ p_m1=mask1; p_m1[p_m1<1.64]=0
 n_m1=(-1)*mask1;  n_m1[n_m1<1.64]=0; n_m1 = (-1)*n_m1
 
 
-writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
-writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
 
 b=read.csv('/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv',header=FALSE)
 
@@ -620,7 +581,7 @@ saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_data.RDS")
 #start plotting
 ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
-poscluster1mask=lm(mask1pos~logk+age+sex+relMeanRMSmotion,data=ddata)
+negcluster1mask_nologk=lm(mask1neg~logk+age+sex+relMeanRMSmotion,data=ddata)
 
 ylab<-"Correlation (z(r))"
 
@@ -663,7 +624,7 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zfdrmask1/'
+dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
 masks=['n_m1', 'p_m1']
 mask = masks
 for i in range(len(masks)):
@@ -681,13 +642,13 @@ label = ['neg','pos']
 for i in range(len(masks)):
   output_image = dir + masks[i]+'MNI.nii.gz'
   img1=img.load_img(output_image)
-  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i],cmap='RdYlBu_r') 
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i]) 
   viewim.append(v)
 
 ii = 0
 for x in viewim:
   ii+=1
-  x.save_as_html('inset'+str(ii)+'.html')
+  x.save_as_html('/cbica/projects/pncitc/ignore/inset'+str(ii)+'.html')
 
 ```
 
@@ -700,6 +661,42 @@ import nibabel as nib
 stat_map_img = '/Users/kahinim/Desktop/mask1MNI.nii.gz'
 plotting.plot_glass_brain(stat_map_img, output_file='/Users/kahinim/Desktop/test.png', display_mode='ortho', colorbar=False, figure=None, axes=None, title=None, threshold='auto', annotate=True, black_bg=False, cmap=None, alpha=0.7, vmin=None, vmax=None, plot_abs=True, symmetric_cbar='auto', resampling_interpolation='continuous')
 ```
+### 7. logk by sex/age interaction
+
+1. I copy-pasted the `cwas293` folder as `cwas293age` or `cwas293sex` for the interaction results to be written into...
+2. I re-ran the mdmr script using the formula `logk*sex` or `logk*age`, keeping other parameters the same.  Here are the scripts:
+
+```
+# sex
+
+#!/bin/bash
+#$ -l h_vmem=300G
+#$ -l tmpfree=300G
+singularity exec -e -B /cbica/projects/pncitc  \
+/cbica/projects/pncitc/cwasmdmr.simg \
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_sex
+
+# age
+#!/bin/bash
+#$ -l h_vmem=300G
+#$ -l tmpfree=300G
+singularity exec -e -B /cbica/projects/pncitc  \
+/cbica/projects/pncitc/cwasmdmr.simg \
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293age -f 'logk*age' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_age
+```
+3. For clustering, I created two directories: `cluster_output_age` and `cluster_output_sex`. The scripts I used for clustering were as below: 
+```
+# for sex
+#!/bin/bash # NO NEED TO QSUB
+dir=/cbica/projects/pncitc
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_sex/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293sex/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_sex
+
+#for age
+#!/bin/bash # NO NEED TO QSUB
+dir=/cbica/projects/pncitc
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
+```
+4. Found a cluster for `logk*sex` in dmPFC, similar to other cluster we found!
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
