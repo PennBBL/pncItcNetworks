@@ -527,9 +527,7 @@ For n=293, I redid this entire script as I found an error in the masks - it seem
  
  Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally. 
  
-Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
- 
- These surface projections are in .html within `.../ignore/Vis`. My code for this part is as below:
+Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
 
 ```
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
