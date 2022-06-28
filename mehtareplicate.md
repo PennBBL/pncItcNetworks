@@ -583,7 +583,7 @@ saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_data.RDS")
 #start plotting
 ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
-negcluster1mask_nologk=lm(mask1neg~logk+age+sex+relMeanRMSmotion,data=ddata)
+negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
 
 ylab<-"Correlation (z(r))"
 
