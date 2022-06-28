@@ -703,7 +703,38 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  
 
 #### ANALYZING THE INTERACTION CLUSTER
 
+1. I re-ran the MDMR, seed-correlation and regression steps as above: 
+2. CWAS: 
+```
+#!/bin/bash
+#$ -l h_vmem=300G
+#$ -l tmpfree=300G
+singularity exec -e -B /cbica/projects/pncitc  \
+/cbica/projects/pncitc/cwasmdmr.simg \
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_sex
+```
+2. Seed-correlation:
+```
+#!/bin/bash 
+cd /cbica/projects/pncitc/ignore
+XCPEDIR=xcpEngine
+seedpoint1=/cbica/projects/pncitc/ignore/cluster_output_sex/cluster_Z3.09/mask1/mask1_2mm.nii.gz
 
+bblid=/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv
+image=/cbica/projects/pncitc/subjectData/rest293/
+outputdir=/cbica/projects/pncitc/ignore/seedcorrmapssex
+
+mkdir -p ${outputdir}
+
+cat $bblid | while IFS="," read -r a b ; 
+
+do
+     img=$(ls -f $image/${a}_${b}_rest.nii.gz)
+     singularity exec --cleanenv -B /cbica/projects/pncitc/ignore /cbica/projects/pncitc/ignore/xcpengine.simg /xcpEngine/utils/seedconnectivity -i $img -s $seedpoint1 -o $outputdir -p ${a},${b} -k 6 -n mask1\
+
+done
+
+```
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
