@@ -362,15 +362,7 @@ In the directory, there are zvalues:
 
 
 ### 5. Vizualisation of Results - iPython in CBICA
-#### I used a different presentation scheme for the final manuscript, which is not reflected on CBICA. These changes are as below: 
-
-
-```
-v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,title='zstat :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for all images other than mean seed corr
-
-v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='zstat :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for mean seed corr
-
- ```
+#### I used a different presentation scheme for the final manuscript, which is not reflected on CBICA.
 
 All computations were done in PNC template. For vizualisation, all the nifti files  were tranformed to MNI before as below: 
 
@@ -451,7 +443,6 @@ at.inputs.invert_transform_flags = [False, False]
 output_image = '/cbica/projects/pncitc/ignore/cluster_output/cluster_Z3.09/mask1/mask1_2mmMNI.nii.gz'
 #put it on surface 
 img1=img.load_img(output_image)
-v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.001,vmax=.5,title='clusters') 
 
 # plot of mean of seed-based correlation 
 
@@ -471,7 +462,8 @@ for i in range(len(corrtm)):
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
     img1=img.load_img(at.inputs.output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,vmax=0.5,title='mean of seed-based correlation' + ': mask' +str(i + 1 )) 
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for mean seed corr
+
     viewim.append(v)
     
 ii = 0    
@@ -519,7 +511,7 @@ viewim=[]
 for i in range(len(zstats)):
     output_image = flame1dir + zstats[i]+'MNI.nii.gz' 
     img1=img.load_img(output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i]') 
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,vmax=5,title='zstat :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
     viewim.append(v)
 
 ii = 0
@@ -652,7 +644,7 @@ label = ['neg','pos']
 for i in range(len(masks)):
   output_image = dir + masks[i]+'MNI.nii.gz'
   img1=img.load_img(output_image)
-  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0,vmax=5,title='zstat :'+label[i]) 
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
   viewim.append(v)
 
 ii = 0
