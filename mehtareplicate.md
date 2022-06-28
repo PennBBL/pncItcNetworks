@@ -624,7 +624,7 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
-dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk'
+dir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/'
 masks=['n_m1', 'p_m1']
 mask = masks
 for i in range(len(masks)):
@@ -648,7 +648,7 @@ for i in range(len(masks)):
 ii = 0
 for x in viewim:
   ii+=1
-  x.save_as_html('inset'+str(ii)+'.html')
+  x.save_as_html('/cbica/projects/pncitc/ignore/inset'+str(ii)+'.html')
 
 ```
 
