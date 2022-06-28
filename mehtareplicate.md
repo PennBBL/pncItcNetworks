@@ -280,7 +280,7 @@ Flameo regression computation requires `design`,`contrast` and `group` text file
 library(pracma)
 demogr=read.csv('~/n293_demographics.csv') 
 #logk+relMeanRMSmotion+age+sex 
-desigmatlogkonly=cbind(rep(1,307),demogr$logk,demogr$sex,demogr$relMeanRMSmotion,demogr$age)
+desigmatlogkonly=cbind(rep(1,293),demogr$logk,demogr$sex,demogr$relMeanRMSmotion,demogr$age)
 
 grp=ones(293,1) # only one group
 
