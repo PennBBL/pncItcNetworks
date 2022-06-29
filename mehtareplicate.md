@@ -735,6 +735,40 @@ do
 done
 
 ```
+3. The `flameo` regression after copying all the needed files over, and making sure the mask1.csv pointed to the right files: 
+```
+#!/bin/bash
+#$ -l h_vmem=200G
+#$ -l tmpfree=200G 
+bblid=/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv 
+imagedir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
+scriptdir=/cbica/projects/pncitc/ignore/seedcorrmapssex
+outputdir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
+demogdir=/cbica/projects/pncitc/ignore/seedcorrmapssex
+
+
+imagelist1=$scriptdir/mask1.csv
+
+rm -rf $imagelist1
+
+
+cat $bblid | while IFS="," read -r a b ; 
+
+do 
+     img1=$(ls -f $imagedir/mask1/${a}_${b}_connectivity_mask1Z_sm6.nii.gz)
+     
+     echo $img1 >> $imagelist1
+
+done 
+
+
+mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
+
+fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
+
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
+
+```
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
