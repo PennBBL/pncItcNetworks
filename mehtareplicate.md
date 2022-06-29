@@ -410,7 +410,7 @@ for i in range(len(zstats)):
 ```
 
  a. for clusters and mean of seed-based correlation: 
-_Note: had to use `flchfiletype` on the `copeseed` images before running the script, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error._
+_Note: had to use `flchfiletype` on the `copeseed` images before running the script, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error. Another tip: if you are using the os.system functionality, running the code from the same directory in which the files are in helps avoid "can't open/read file" errors_
 ```
 # import all the requirements and hide warnings
 import warnings
@@ -449,6 +449,7 @@ img1=img.load_img(output_image)
 # average of all subject 
 seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/'
 corrtm=['4Dcopeseed1'] # make sure to change to nifti and remove .img
+label = corrtm
 viewim=[]
 meanimage=MeanImage()
 for i in range(len(corrtm)):
@@ -792,11 +793,158 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/design.mat  --tc=${demogdir}/design.con  --cs=${demogdir}/design.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/design.mat  --tc=${demogdir}/design.con  --cs=${demogdir}/design.grp --runmode=flame1 --ld=$outputdir/mask1/logk #This can easily be bash'd instead of qsubbed
 
 ```
+4. Finally, I plotted the images using previous methods as such in iPython on CBICA: 
+
+**Doing the MNI transforms**
+
+```
+# import all the requirements and hide warnings
+import warnings
+warnings.filterwarnings("ignore")
 
 
+import nilearn.plotting as plott
+import nilearn.image as img
+from nilearn import datasets,surface
+import matplotlib.pyplot as plt
+from nipype.interfaces.ants import ApplyTransforms
+
+big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
+
+#registration paramteters
+
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
+at = ApplyTransforms()
+at.inputs.dimension = 3
+at.inputs.reference_image = ref
+at.inputs.interpolation = 'NearestNeighbor'
+at.inputs.default_value = 0
+at.inputs.transforms = [transform1, transform2]
+at.inputs.invert_transform_flags = [False, False]
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
+zstats=['zstat1','zstat2'] # REMEMBER TO MAKE THESE NIFTI AND DELETE THE .IMG AND .HDR FILES!
+viewim=[]
+for i in range(len(zstats)):
+    at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
+    at.inputs.output_image = flame1dir + zstats[i]+'MNI.nii.gz'
+    at.run()
+
+clusterdirectory = '/cbica/projects/pncitc/ignore/cluster_output_sex/cluster_Z3.09'
+zstats=['/mask1/mask1_2mm','/mask1/mask1'] 
+for i in range(len(zstats)):
+    at.inputs.input_image = clusterdirectory + zstats[i]+'.nii.gz'
+    at.inputs.output_image = clusterdirectory + zstats[i]+'MNI.nii.gz'
+    at.run()
+```
+
+**Mean Seed Correlation**
+```
+import nilearn.plotting as plott
+import nilearn.image as img
+from nilearn import datasets,surface
+import matplotlib.pyplot as plt
+from nipype.interfaces.ants import ApplyTransforms
+from nipype.interfaces.fsl import MultiImageMaths,maths, MeanImage
+import os
+
+big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
+
+#registration paramteters
+
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
+at = ApplyTransforms()
+at.inputs.dimension = 3
+at.inputs.reference_image = ref
+at.inputs.interpolation = 'NearestNeighbor'
+at.inputs.default_value = 0
+at.inputs.transforms = [transform1, transform2]
+at.inputs.invert_transform_flags = [False, False]
+
+output_image = '/cbica/projects/pncitc/ignore/cluster_output_sex/cluster_Z3.09/mask1/mask1_2mmMNI.nii.gz'
+#put it on surface 
+img1=img.load_img(output_image)
+
+# plot of mean of seed-based correlation 
+
+# average of all subject 
+seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/'
+corrtm=['4Dcopeseed1'] # make sure to change to nifti and remove .img
+viewim=[]
+label=corrtm
+meanimage=MeanImage()
+for i in range(len(corrtm)):
+    meanimage.inputs.in_file=seedbasedir + corrtm[i]+ '.nii.gz'
+    meanimage.inputs.dimension='T'
+    meanimage.inputs.out_file=seedbasedir +corrtm[i] + 'mean.nii.gz'
+    meanimage.run()
+    os.system('cd /cbica/projects/pncitc/ignore/seedcorrmapssex/seed')
+    os.system('fslchfiletype NIFTI_GZ 4Dcopeseed1mean.img 4Dcopeseed1mean.nii.gz')
+    os.system('rm -rf 4Dcopeseed1mean.hdr  4Dcopeseed1mean.img')
+    at.inputs.input_image = meanimage.inputs.out_file
+    at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
+    at.run()
+    img1=img.load_img(at.inputs.output_image)
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) # for mean seed corr
+
+    viewim.append(v)
+
+ii = 0
+for x in viewim:
+    ii += 1
+    x.save_as_html("/cbica/projects/pncitc/ignore/meanseedbasedcorrinteraction" + str(ii) + ".html")
+```
+
+** Zstat maps ** 
+
+```
+# import all the requirements and hide warnings
+import warnings
+warnings.filterwarnings("ignore")
+
+
+import nilearn.plotting as plott
+import nilearn.image as img
+from nilearn import datasets,surface
+import matplotlib.pyplot as plt
+from nipype.interfaces.ants import ApplyTransforms
+
+big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
+
+#registration paramteters
+
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
+at = ApplyTransforms()
+at.inputs.dimension = 3
+at.inputs.reference_image = ref
+at.inputs.interpolation = 'NearestNeighbor'
+at.inputs.default_value = 0
+at.inputs.transforms = [transform1, transform2]
+at.inputs.invert_transform_flags = [False, False]
+
+flame1dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
+zstats=['zstat1','zstat2']
+label=['mean','logk']
+viewim=[]
+for i in range(len(zstats)):
+    output_image = flame1dir + zstats[i]+'MNI.nii.gz' 
+    img1=img.load_img(output_image)
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,vmax=5,title='zstat :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
+    viewim.append(v)
+
+ii = 0
+for x in viewim:
+    ii+=1
+    x.save_as_html("/cbica/projects/pncitc/ignore/clusterinteraction"+str(ii)+".html")
+```
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
