@@ -759,6 +759,8 @@ followed by making sure the contrast.con was a 4 by 4 matrix like this via vim:
 ```
 grp.grp stayed the same, I just edited numwaves to be 4. 
 
+I also renamed all the files to be: `design.mat`,  `design.con` and `design.grp`
+
 4. After making sure the mask1.csv pointed to the right files, I continued: 
 ```
 #!/bin/bash
@@ -766,9 +768,9 @@ grp.grp stayed the same, I just edited numwaves to be 4.
 #$ -l tmpfree=200G 
 bblid=/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv 
 imagedir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
-scriptdir=/cbica/projects/pncitc/ignore/seedcorrmapssex
+scriptdir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
 outputdir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
-demogdir=/cbica/projects/pncitc/ignore/seedcorrmapssex
+demogdir=/cbica/projects/pncitc/ignore/seedcorrmapssex/seed
 
 
 imagelist1=$scriptdir/mask1.csv
@@ -790,7 +792,7 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/designmat.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/design.mat  --tc=${demogdir}/design.con  --cs=${demogdir}/design.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
 
 ```
 
