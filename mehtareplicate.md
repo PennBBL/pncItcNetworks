@@ -735,7 +735,31 @@ do
 done
 
 ```
-3. The `flameo` regression after copying all the needed files over, and making sure the mask1.csv pointed to the right files: 
+3. The `flameo` regression after copying all the needed files over and editing the contrast.con and designmat in R:
+```
+library(pracma)
+x <- read.csv('~/n293_demographics.csv')
+c <- model.matrix(logx*sex, data=x)
+write.table(desigmatlogkonly,'~/designmat.txt',sep=' ',quote = FALSE,row.names = FALSE,col.names = FALSE)
+```
+and then: 
+
+```
+Text2Vest designmat.txt designmat.mat
+```
+followed by making sure the contrast.con was a 4 by 4 matrix like this via vim: 
+```
+/NumWaves 4
+/NumPoints 4
+/Matrix
+1 0 0 0 
+0 1 0 0 
+0 0 1 0 
+0 0 0 1 
+```
+grp.grp stayed the same, I just edited numwaves to be 4. 
+
+4. After making sure the mask1.csv pointed to the right files, I continued: 
 ```
 #!/bin/bash
 #$ -l h_vmem=200G
@@ -766,7 +790,7 @@ mask=/cbica/projects/pncitc/subjectData/PNCgrey2mm.nii.gz
 
 fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 
-flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/desigmatlogkonly.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
+flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/designmat.mat  --tc=${demogdir}/contrast4.con  --cs=${demogdir}/grp.grp --runmode=flame1 --ld=$outputdir/mask1/logk #SECOND PART, WHICH TAKES LONGER
 
 ```
 
