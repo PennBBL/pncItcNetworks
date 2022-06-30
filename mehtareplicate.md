@@ -702,10 +702,11 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  
 ```
 4. Found a cluster for `logk*sex` in dmPFC, similar to other cluster we found!
 
-#### ANALYZING THE INTERACTION CLUSTER
+### Analyzing the interaction cluster
 
-1. I re-ran the MDMR, seed-correlation and regression steps as above: 
-2. CWAS: 
+ I re-ran the MDMR, seed-correlation and regression steps as above.
+
+#### CWAS: 
 ```
 #!/bin/bash
 #$ -l h_vmem=300G
@@ -714,7 +715,7 @@ singularity exec -e -B /cbica/projects/pncitc  \
 /cbica/projects/pncitc/cwasmdmr.simg \
 /usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_sex
 ```
-2. Seed-correlation:
+#### Seed-correlation:
 ```
 #!/bin/bash 
 cd /cbica/projects/pncitc/ignore
@@ -736,14 +737,16 @@ do
 done
 
 ```
-3. The `flameo` regression after copying all the needed files over and editing the contrast.con and designmat in R:
+#### The `flameo` regression
+
+After copying all the needed files (i.e: contrast and group) over from `ignore/seedcorrmaps/...` and creating the new designmat in R like so:
 ```
 library(pracma)
 x <- read.csv('~/n293_demographics.csv')
 c <- model.matrix(logx*sex, data=x)
 write.table(desigmatlogkonly,'~/designmat.txt',sep=' ',quote = FALSE,row.names = FALSE,col.names = FALSE)
 ```
-and then: 
+I did:
 
 ```
 Text2Vest designmat.txt designmat.mat
@@ -762,7 +765,7 @@ grp.grp stayed the same, I just edited numwaves to be 4.
 
 I also renamed all the files to be: `design.mat`,  `design.con` and `design.grp`
 
-4. After making sure the mask1.csv pointed to the right files, I continued: 
+ After making sure the mask1.csv pointed to the right files, I continued: 
 ```
 #!/bin/bash
 #$ -l h_vmem=200G
@@ -796,7 +799,9 @@ fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/design.mat  --tc=${demogdir}/design.con  --cs=${demogdir}/design.grp --runmode=flame1 --ld=$outputdir/mask1/logk #This can easily be bash'd instead of qsubbed
 
 ```
-4. Finally, I plotted the images using previous methods as such in iPython on CBICA: 
+#### Visualization
+
+Finally, I plotted the images using previous methods as such in iPython on CBICA: 
 
 **Doing the MNI transforms**
 
@@ -947,6 +952,7 @@ for x in viewim:
 ```
 
 **Regressions graph for regions of logk significance** 
+As before, I used R on cbica for this.
 ```
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(pracma, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
