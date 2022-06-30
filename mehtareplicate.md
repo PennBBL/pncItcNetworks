@@ -799,7 +799,7 @@ fslmerge -t ${outputdir}/4Dcopeseed1.nii.gz $(cat $imagelist1)
 flameo --copefile=${outputdir}/4Dcopeseed1.nii.gz   --mask=${mask}   --dm=${demogdir}/design.mat  --tc=${demogdir}/design.con  --cs=${demogdir}/design.grp --runmode=flame1 --ld=$outputdir/mask1/logk #This can easily be bash'd instead of qsubbed
 
 ```
-#### Visualization
+### Visualization
 
 Finally, I plotted the images using previous methods as such in iPython on CBICA: 
 
