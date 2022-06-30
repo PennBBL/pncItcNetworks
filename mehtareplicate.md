@@ -1016,9 +1016,59 @@ y+ scale_colour_manual(values=group.colors)+labs(colour="Sex")+theme(legend.back
 ggsave('/cbica/projects/pncitc/ignore/intcluster1neg.png')
 
 ```
-For the insets, I once again used the already generated masks p_m1 and n_m1 after turning them to nifti: 
+For the insets, I once again used the already generated masks p_m1 and n_m1 in iPython after turning them to nifti: 
 ```
+# import all the requirements and hide warnings
+import warnings
+warnings.filterwarnings("ignore")
+import os
 
+import nilearn.plotting as plott
+import nilearn.image as img
+from nilearn import datasets,surface
+import matplotlib.pyplot as plt
+from nipype.interfaces.ants import ApplyTransforms
+
+big_fsaverage = datasets.fetch_surf_fsaverage('fsaverage') # for viz 
+
+#registration paramteters
+
+ref='/cbica/projects/pncitc/subjectData/PNC_transforms/MNI152_T1_2mm_brain.nii.gz'
+transform1='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_0Warp.nii.gz'
+transform2='/cbica/projects/pncitc/subjectData/PNC_transforms/PNC-MNI_1Affine.mat'
+at = ApplyTransforms()
+at.inputs.dimension = 3
+at.inputs.reference_image = ref
+at.inputs.interpolation = 'NearestNeighbor'
+at.inputs.default_value = 0
+at.inputs.transforms = [transform1, transform2]
+at.inputs.invert_transform_flags = [False, False]
+
+dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
+masks=['n_m1', 'p_m1']
+mask = masks
+for i in range(len(masks)):
+    at.inputs.input_image = dir + masks[i]+'.nii.gz'
+    at.inputs.output_image = dir + masks[i]+'MNI.nii.gz'
+    img2 = mask[i]+'.img'
+    nii = mask[i]+'.nii.gz'
+    os.system('fslchfiletype NIFTI_GZ ' + img2 + ' ' + nii)
+    os.system('rm -rf *img')
+    at.run()
+
+viewim=[]
+label = ['neg','pos']
+
+for i in range(len(masks)):
+  output_image = dir + masks[i]+'MNI.nii.gz'
+  img1=img.load_img(output_image)
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True, threshold = 0.09) 
+  viewim.append(v)
+
+ii = 0
+for x in viewim:
+  ii+=1
+  x.save_as_html('/cbica/projects/pncitc/ignore/interinset'+str(ii)+'.html')
 ```
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
