@@ -901,7 +901,7 @@ for x in viewim:
     x.save_as_html("/cbica/projects/pncitc/ignore/meanseedbasedcorrinteraction" + str(ii) + ".html")
 ```
 
-** Zstat maps ** 
+**Zstat maps** 
 
 ```
 # import all the requirements and hide warnings
@@ -944,6 +944,81 @@ ii = 0
 for x in viewim:
     ii+=1
     x.save_as_html("/cbica/projects/pncitc/ignore/clusterinteraction"+str(ii)+".html")
+```
+
+**Regressions graph for regions of logk significance** 
+```
+library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(pracma, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
+library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat2.nii.gz') 
+
+#get the  postive masks
+p_m1=mask1; p_m1[p_m1<3.09]=0
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat2.nii.gz') 
+
+#get the negative masks
+n_m1=mask1; n_m1[n_m1>-3.09]=0
+
+
+writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+
+b=read.csv('/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv',header=FALSE)
+
+#make table 
+
+corrdata=zeros(293,4)
+
+for (i in 1:293) {
+  img1=readNifti(paste0('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz')) # flameo output
+  datap1=img1[p_m1!=0]
+  datam1=img1[n_m1!=0]
+  corrdata[i,]=c(b[i,1],b[i,2],mean(datap1),mean(datam1))
+}
+
+colnames(corrdata)=c('bblid','scanid','mask1pos','mask1neg')
+
+write.csv(corrdata,'/cbica/projects/pncitc/demographics/n293_meanseedcorrinteraction.csv',quote = FALSE,row.names = FALSE)
+
+# merge CSV
+x = read.csv('/cbica/projects/pncitc/demographics/n293_meanseedcorrinteraction.csv')
+y = read.csv('/cbica/projects/pncitc/demographics/n307_demographics.csv') # demographics are right, when merged the n307 will become n293
+z = read.csv('/cbica/projects/pncitc/demographics/n2416_RestQAData_20170714.csv')
+
+final1=merge(x,y, by=c('bblid','scanid')) # merge by Ids  
+final2=merge(final1,z, by=c('bblid','scanid')) # merge by Ids 
+write.csv(final2,'n293_data.csv',quote = FALSE,row.names = FALSE)
+
+# write as .rds
+saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_interaction_data.RDS") 
+
+ddata=readRDS('/cbica/projects/pncitc/demographics/my_interaction_data.RDS')
+poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
+negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
+ddata$sex[ddata$sex == 2] <- "Female"
+ddata$sex[ddata$sex == 1] <- "Male"
+ylab<-"Correlation (z(r))"
+
+ddata$poscluster1resid<-poscluster1mask_nologk$residuals+mean(ddata$mask1pos)
+group.colors <- c(Male = '#0c3e6d', Female = "#b40101")
+x<-ggplot(ddata,aes(x=logk,y=poscluster1resid, colour=sex, group=interaction(sex, logk))) + geom_smooth(method = 'lm',size=2,fill='grey',alpha=.8,aes(group=sex))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+x+ scale_colour_manual(values=group.colors)+labs(colour = "Sex")+theme(legend.background=element_rect(fill = 'white'),legend.key=element_rect(fill = 'white',colour=NA),legend.box.background = element_blank())
+ggsave('/cbica/projects/pncitc/ignore/intcluster1pos.png')
+
+ddata$negcluster1resid<-negcluster1mask_nologk$residuals+mean(ddata$mask1neg)
+y<-ggplot(ddata,aes(x=logk,y=negcluster1resid, colour=sex, group=interaction(sex, logk))) + geom_smooth(method = 'lm',size=2,fill='grey',alpha=.8,aes(group=sex))+xlim(c(-8.75,-1))+ geom_point() + xlab("Discount Rate (logK)") +ylab(ylab) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) + theme(axis.line.x = element_line(colour = 'black', size = 2), axis.line.y = element_line(colour = 'black', size = 2), axis.ticks.length = unit(.25, "cm"), axis.text = element_text(face="bold",size=20), axis.title = element_text(size=26), axis.title.y = element_text(margin = margin(t = 0, r = 27, b = 0, l = 0)))
+y+ scale_colour_manual(values=group.colors)+labs(colour="Sex")+theme(legend.background=element_rect(fill = 'white'),legend.key=element_rect(fill = 'white'))
+
+ggsave('/cbica/projects/pncitc/ignore/intcluster1neg.png')
+
+```
+For the insets, I once again used the already generated masks p_m1 and n_m1 after turning them to nifti: 
+```
+
 ```
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
