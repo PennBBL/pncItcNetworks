@@ -1011,8 +1011,7 @@ write.csv(final2,'n293_data.csv',quote = FALSE,row.names = FALSE)
 
 # write as .rds
 saveRDS(final2, file = "/cbica/projects/pncitc/demographics/interaction_data.RDS") 
-### THIS CODE BLOCK IS A WORK IN PROGRESS FROM THIS LINE ONWARDS
-ddata=readRDS('/cbica/projects/pncitc/demographics/interaction_data.RDS')
+ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
 negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
 ddata$sex[ddata$sex == 2] <- "Female"
