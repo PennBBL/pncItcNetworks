@@ -848,6 +848,16 @@ for i in range(len(zstats)):
 ```
 
 **Mean Seed Correlation**
+
+In the `logk` directory, there are zvalues:
+
+zstat1 : average
+
+zstat2 : logk
+
+zstat3 : sex
+
+zstat4 : interaction
 ```
 import nilearn.plotting as plott
 import nilearn.image as img
@@ -960,18 +970,18 @@ library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
-mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat2.nii.gz') 
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat4.nii.gz') 
 
 #get the  postive masks
-p_m1=mask1; p_m1[p_m1<3.09]=0
-mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat2.nii.gz') 
+p_m1in=mask1; p_m1in[p_m1in<3.09]=0
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/zstat4.nii.gz') 
 
 #get the negative masks
-n_m1=mask1; n_m1[n_m1>-3.09]=0
+n_m1in=mask1; n_m1in[n_m1in>-3.09]=0
 
 
-writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
-writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/n_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/p_m1in.nii.gz', template = NULL, datatype = "auto", version = 1)
+writeNifti(n_m1, '/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/n_m1in.nii.gz', template = NULL, datatype = "auto", version = 1)
 
 b=read.csv('/cbica/projects/pncitc/demographics/n293_bblid_scandid.csv',header=FALSE)
 
@@ -981,17 +991,17 @@ corrdata=zeros(293,4)
 
 for (i in 1:293) {
   img1=readNifti(paste0('/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/',b[i,1],'_',b[i,2],'_connectivity_mask1Z_sm6.nii.gz')) # flameo output
-  datap1=img1[p_m1!=0]
-  datam1=img1[n_m1!=0]
+  datap1=img1[p_m1in!=0]
+  datam1=img1[n_m1in!=0]
   corrdata[i,]=c(b[i,1],b[i,2],mean(datap1),mean(datam1))
 }
 
 colnames(corrdata)=c('bblid','scanid','mask1pos','mask1neg')
 
-write.csv(corrdata,'/cbica/projects/pncitc/demographics/n293_meanseedcorrinteraction.csv',quote = FALSE,row.names = FALSE)
+write.csv(corrdata,'/cbica/projects/pncitc/demographics/n293_interaction.csv',quote = FALSE,row.names = FALSE)
 
 # merge CSV
-x = read.csv('/cbica/projects/pncitc/demographics/n293_meanseedcorrinteraction.csv')
+x = read.csv('/cbica/projects/pncitc/demographics/n293_interaction.csv')
 y = read.csv('/cbica/projects/pncitc/demographics/n307_demographics.csv') # demographics are right, when merged the n307 will become n293
 z = read.csv('/cbica/projects/pncitc/demographics/n2416_RestQAData_20170714.csv')
 
@@ -1000,9 +1010,9 @@ final2=merge(final1,z, by=c('bblid','scanid')) # merge by Ids
 write.csv(final2,'n293_data.csv',quote = FALSE,row.names = FALSE)
 
 # write as .rds
-saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_interaction_data.RDS") 
-
-ddata=readRDS('/cbica/projects/pncitc/demographics/my_interaction_data.RDS')
+saveRDS(final2, file = "/cbica/projects/pncitc/demographics/interaction_data.RDS") 
+### THIS CODE BLOCK IS A WORK IN PROGRESS FROM THIS LINE ONWARDS
+ddata=readRDS('/cbica/projects/pncitc/demographics/interaction_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
 negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
 ddata$sex[ddata$sex == 2] <- "Female"
@@ -1051,7 +1061,7 @@ at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
 dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
-masks=['n_m1', 'p_m1']
+masks=['n_m1in', 'p_m1in']
 mask = masks
 for i in range(len(masks)):
     at.inputs.input_image = dir + masks[i]+'.nii.gz'
@@ -1074,7 +1084,7 @@ for i in range(len(masks)):
 ii = 0
 for x in viewim:
   ii+=1
-  x.save_as_html('/cbica/projects/pncitc/ignore/interinset'+str(ii)+'.html')
+  x.save_as_html('/cbica/projects/pncitc/ignore/intereffectsinset'+str(ii)+'.html')
 ```
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
