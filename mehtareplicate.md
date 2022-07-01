@@ -731,6 +731,8 @@ do
 done
 
 ```
+# PAUSED HERE AS OF JULY 1 2022
+
 #### The `flameo` regression
 
 After copying all the needed files (i.e: contrast and group) over from `ignore/seedcorrmaps/...` and creating the new designmat in R like so:
