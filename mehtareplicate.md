@@ -709,7 +709,7 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293logkbyage/logk_motion_sex_age/zst
 
 #### Seed-correlation:
 
-Resample the cluster mask to be 2 mm. 
+Don't forget to threshold and resample the mask as before! Then run: 
 ```
 #!/bin/bash 
 cd /cbica/projects/pncitc/ignore
