@@ -832,7 +832,7 @@ at.inputs.default_value = 0
 at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 flame1dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
-zstats=['zstat1','zstat2'] # REMEMBER TO MAKE THESE NIFTI AND DELETE THE .IMG AND .HDR FILES!
+zstats=['zstat4'] # REMEMBER TO MAKE THESE NIFTI AND DELETE THE .IMG AND .HDR FILES!
 viewim=[]
 for i in range(len(zstats)):
     at.inputs.input_image = flame1dir + zstats[i]+'.nii.gz'
@@ -946,8 +946,8 @@ at.inputs.transforms = [transform1, transform2]
 at.inputs.invert_transform_flags = [False, False]
 
 flame1dir='/cbica/projects/pncitc/ignore/seedcorrmapssex/seed/mask1/logk/'
-zstats=['zstat1','zstat2']
-label=['mean','logk']
+zstats=['zstat4']
+label=['interaction']
 viewim=[]
 for i in range(len(zstats)):
     output_image = flame1dir + zstats[i]+'MNI.nii.gz' 
@@ -958,7 +958,7 @@ for i in range(len(zstats)):
 ii = 0
 for x in viewim:
     ii+=1
-    x.save_as_html("/cbica/projects/pncitc/ignore/clusterinteraction"+str(ii)+".html")
+    x.save_as_html("/cbica/projects/pncitc/ignore/clustereffinteraction"+str(ii)+".html")
 ```
 
 **Regressions graph for regions of logk significance** 
