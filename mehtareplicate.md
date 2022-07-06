@@ -700,3 +700,7 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_motion_sex_age/zstats_lo
 dir=/cbica/projects/pncitc
 bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_motion_sex_age/zstats_logk:age.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
 ```
+
+No significant clusters were found. 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
