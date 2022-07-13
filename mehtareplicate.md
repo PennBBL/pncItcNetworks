@@ -280,7 +280,7 @@ Flameo regression computation requires `design`,`contrast` and `group` text file
 library(pracma)
 demogr=read.csv('~/n293_demographics.csv') 
 #logk+relMeanRMSmotion+age+sex 
-desigmatlogkonly=cbind(rep(1,307),demogr$logk,demogr$sex,demogr$relMeanRMSmotion,demogr$age)
+desigmatlogkonly=cbind(rep(1,293),demogr$logk,demogr$sex,demogr$relMeanRMSmotion,demogr$age)
 
 grp=ones(293,1) # only one group
 
@@ -410,7 +410,7 @@ for i in range(len(zstats)):
 ```
 
  a. for clusters and mean of seed-based correlation: 
-_Note: had to use `flchfiletype` on the `copeseed` images before running the script, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error._
+_Note: had to use `flchfiletype` on the `copeseed` images before running the script, and move the `.hdr` and `.img` files out of the directory/ remove them altogether - having the nifti and img in the same directory can cause an error. Another tip: if you are using the os.system functionality, running the code from the same directory in which the files are in helps avoid "can't open/read file" errors_
 ```
 # import all the requirements and hide warnings
 import warnings
@@ -449,6 +449,7 @@ img1=img.load_img(output_image)
 # average of all subject 
 seedbasedir='/cbica/projects/pncitc/ignore/seedcorrmaps/seed/'
 corrtm=['4Dcopeseed1'] # make sure to change to nifti and remove .img
+label = corrtm
 viewim=[]
 meanimage=MeanImage()
 for i in range(len(corrtm)):
@@ -462,7 +463,7 @@ for i in range(len(corrtm)):
     at.inputs.output_image = seedbasedir +corrtm[i] + 'meanMNI.nii.gz'
     at.run()
     img1=img.load_img(at.inputs.output_image)
-    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_map=True) # for mean seed corr
+    v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=0.1,title='meanseedcorr :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) # for mean seed corr
 
     viewim.append(v)
     
@@ -525,11 +526,11 @@ Images I generated were saved in `/cbica/projects/pncitc/ignore` in the .html fo
 
 ### 6. Regional plot of significant regions of logk
  
+ 
 For n=293, I redid this entire script as I found an error in the masks - it seems positive and negative masks were switched, and the negative masks were multiplied by -1. 
  
- Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally. 
- 
-Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
+Additionally, I pulled out all non-zero values for corrdata rather than values equal to 1, as was done originally:
+
 
 ```
 library(RNifti, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
@@ -538,14 +539,14 @@ library(ggplot2, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(nlme, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(visreg, lib.loc = '/cbica/projects/pncitc/mehtareplicate')
 library(Matrix, lib.loc = '/cbica/projects/pncitc/mehtareplicate') # and really any other packages that give you issues - as this can happen
-# make the masks
 mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zstat2.nii.gz') 
 
 #get the  postive masks
-p_m1=mask1; p_m1[p_m1<1.64]=0
+p_m1=mask1; p_m1[p_m1<3.09]=0
+mask1=readNifti('/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/zstat2.nii.gz') 
 
 #get the negative masks
-n_m1=(-1)*mask1;  n_m1[n_m1<1.64]=0; n_m1 = (-1)*n_m1
+n_m1=mask1; n_m1[n_m1>-3.09]=0
 
 
 writeNifti(p_m1, '/cbica/projects/pncitc/ignore/seedcorrmaps/seed/mask1/logk/p_m1.nii.gz', template = NULL, datatype = "auto", version = 1)
@@ -583,7 +584,7 @@ saveRDS(final2, file = "/cbica/projects/pncitc/demographics/my_data.RDS")
 #start plotting
 ddata=readRDS('/cbica/projects/pncitc/demographics/my_data.RDS')
 poscluster1mask_nologk=lm(mask1pos~age+sex+relMeanRMSmotion,data=ddata)
-negcluster1mask_nologk=lm(mask1neg~logk+age+sex+relMeanRMSmotion,data=ddata)
+negcluster1mask_nologk=lm(mask1neg~age+sex+relMeanRMSmotion,data=ddata)
 
 ylab<-"Correlation (z(r))"
 
@@ -597,7 +598,8 @@ ggplot(ddata,aes(x=logk,y=negcluster1resid)) + geom_smooth(method = 'lm', colour
 
 ggsave('/cbica/projects/pncitc/ignore/cluster1neg.png')
 ```
-Insets were finally visualized on CBICA via iPython using: 
+ 
+Finally, I generated the insets seen in the manuscript (these were the niftis written out in the script below, I then projected them to the surface in `ignore` using similar code as in `/notebook/flameomask1.ipynb` on this Github.)
 
 ```
 # import all the requirements and hide warnings
@@ -644,7 +646,7 @@ label = ['neg','pos']
 for i in range(len(masks)):
   output_image = dir + masks[i]+'MNI.nii.gz'
   img1=img.load_img(output_image)
-  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',threshold=3.09,vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True) 
+  v= plott.view_img_on_surf(img1, surf_mesh='fsaverage',vmax=5,title='inset :'+label[i],cmap = 'coolwarm', symmetric_cmap=True, threshold = 0.09) 
   viewim.append(v)
 
 ii = 0
@@ -665,7 +667,7 @@ plotting.plot_glass_brain(stat_map_img, output_file='/Users/kahinim/Desktop/test
 ```
 ### 7. logk by sex/age interaction
 
-1. I copy-pasted the `cwas293` folder as `cwas293age` or `cwas293sex` for the interaction results to be written into...
+1. I copy-pasted the `cwas293` folder as `cwas293alogkbyge` or `cwas293logkbysex` for the interaction results to be written into...
 2. I re-ran the mdmr script using the formula `logk*sex` or `logk*age`, keeping other parameters the same.  Here are the scripts:
 
 ```
@@ -676,7 +678,7 @@ plotting.plot_glass_brain(stat_map_img, output_file='/Users/kahinim/Desktop/test
 #$ -l tmpfree=300G
 singularity exec -e -B /cbica/projects/pncitc  \
 /cbica/projects/pncitc/cwasmdmr.simg \
-/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_sex
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293sex -f 'logk*sex+age+relMeanRMSmotion' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk:sex' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_motion_sex_age
 
 # age
 #!/bin/bash
@@ -684,21 +686,21 @@ singularity exec -e -B /cbica/projects/pncitc  \
 #$ -l tmpfree=300G
 singularity exec -e -B /cbica/projects/pncitc  \
 /cbica/projects/pncitc/cwasmdmr.simg \
-/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293age -f 'logk*age' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_age
+/usr/local/bin/Rscript /usr/local/bin/connectir_mdmr.R -i /cbica/projects/pncitc/ignore/cwas293age -f 'logk*age+sex+relMeanRMSmotion' -m /cbica/projects/pncitc/samplerecreation/n293_demographics.csv --factors2perm='logk:age' --save-perms -c 5 -t 5  --ignoreprocerror --memlimit=300 logk_motion_sex_age
 ```
-3. For clustering, I created two directories: `cluster_output_age` and `cluster_output_sex`. The scripts I used for clustering were as below: 
+3. For clustering, I created two directories: `cluster_output_sex` and `cluster_output_age`. The scripts I used for clustering were as below: 
 ```
 # for sex
 #!/bin/bash # NO NEED TO QSUB
 dir=/cbica/projects/pncitc
-bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_sex/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293sex/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_sex
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293sex/logk_motion_sex_age/zstats_logk:sex.nii.gz  -m ${dir}/ignore/cwas293sex/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_sex
 
 #for age
 #!/bin/bash # NO NEED TO QSUB
 dir=/cbica/projects/pncitc
-bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_age/zstats_logk.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
+bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_motion_sex_age/zstats_logk:age.nii.gz  -m ${dir}/ignore/cwas293age/mask.nii.gz -t 3.09 -o ${dir}/ignore/cluster_output_age
 ```
-4. Found a cluster for `logk*sex` in dmPFC, similar to other cluster we found!
-------------------------------------------------------------------------------------------------------------------------------------------------------
 
+No significant clusters were found. 
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------
