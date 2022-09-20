@@ -728,5 +728,5 @@ plot(logk~age)
 reg_ses = lm(logk~ses)
 plot(logk~ses)
 ```
-4. There did not appear to be any correlation.
+4. There appeared to be a correlation of -0.155 for SES
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
