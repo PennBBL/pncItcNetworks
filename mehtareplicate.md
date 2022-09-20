@@ -703,4 +703,17 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_motion_sex_age/zstats_lo
 
 No significant clusters were found. 
 
+### 8. SES and age effects on behavioral data
+1. I obtained maternal level of education from  `/cbica/projects/pncitc/dropbox/pehlivanovaPncItc/subjectData/demoBehavData/n453_k_demo_June2016.csv`
+2. I merged it with `n293_data.csv` using `R` and saved `n293_full_data.csv` to the `demographics` directory on CBICA: 
+```
+setwd("/Users/kahinim/Desktop")
+
+# read the subject demographics
+453demo=read.csv('n453_k_demo_June2016.csv') # pnc QA for resting-state data
+293data=read.csv('n293_data.csv') # Marieta final subject QA  
+pncitc=merge(453demo,293data, by=c('bblid','scanid')) # merge by Ids  
+write.csv(pncitc,'n293_full_data.csv',quote = FALSE,row.names = FALSE)
+```
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
