@@ -704,16 +704,16 @@ bash grf_fslcluster.sh -i ${dir}/ignore/cwas293age/logk_motion_sex_age/zstats_lo
 No significant clusters were found. 
 
 ### 8. SES and age effects on behavioral data
-1. I obtained maternal level of education from  `/cbica/projects/pncitc/dropbox/pehlivanovaPncItc/subjectData/demoBehavData/n453_k_demo_June2016.csv`
-2. I merged it with `n293_data.csv` using `R` and saved `n293_full_data.csv` to the `demographics` directory on CBICA: 
+1. I obtained maternal level of education from  `/cbica/projects/pncitc/dropbox/pehlivanovaPncItc/subjectData/demoBehavData/n452_pnc_itc_whole_sample_201608256.csv`
+2. I merged it with `n293_data.csv` using `R` and saved `n293_full_demo_data.csv` to the `demographics` directory on CBICA: 
 ```
 setwd("/Users/kahinim/Desktop")
 
 # read the subject demographics
-demo=read.csv('n453_k_demo_June2016.csv') # pnc QA for resting-state data
-data=read.csv('n293_data.csv') # Marieta final subject QA  
+demo=read.csv('n452_pnc_itc_whole_sample_20160825.csv')
+data=read.csv('n293_data.csv') 
 pncitc=merge(demo,data, by=c('bblid','scanid')) # merge by Ids  
-write.csv(pncitc,'n293_full_data.csv',quote = FALSE,row.names = FALSE)
+write.csv(pncitc,'n293_full_demo_data.csv',quote = FALSE,row.names = FALSE)
 ```
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
