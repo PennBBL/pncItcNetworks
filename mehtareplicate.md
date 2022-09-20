@@ -718,7 +718,10 @@ write.csv(pncitc,'n293_full_demo_data.csv',quote = FALSE,row.names = FALSE)
 3. After obtaining this data, I used R to run a bivariate analysis: 
 ```
 age = pncitc$age
-ses = pncitc$goassessEnvSes
+medu1 = pncitc$meduCnbGo1
+fedu1 = pncitc$feduCnbGo1
+edu = (medu1+fedu1)/2
+ses = edu
 logk =  pncitc$logk.x
 reg_age = lm(logk~age)
 plot(logk~age)
