@@ -710,9 +710,9 @@ No significant clusters were found.
 setwd("/Users/kahinim/Desktop")
 
 # read the subject demographics
-453demo=read.csv('n453_k_demo_June2016.csv') # pnc QA for resting-state data
-293data=read.csv('n293_data.csv') # Marieta final subject QA  
-pncitc=merge(453demo,293data, by=c('bblid','scanid')) # merge by Ids  
+demo=read.csv('n453_k_demo_June2016.csv') # pnc QA for resting-state data
+data=read.csv('n293_data.csv') # Marieta final subject QA  
+pncitc=merge(demo,data, by=c('bblid','scanid')) # merge by Ids  
 write.csv(pncitc,'n293_full_data.csv',quote = FALSE,row.names = FALSE)
 ```
 
