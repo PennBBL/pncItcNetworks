@@ -715,5 +715,15 @@ data=read.csv('n293_data.csv')
 pncitc=merge(demo,data, by=c('bblid','scanid')) # merge by Ids  
 write.csv(pncitc,'n293_full_demo_data.csv',quote = FALSE,row.names = FALSE)
 ```
-
+After obtaining this data, I used R to run a bivariate analysis: 
+```
+age = pncitc$age
+ses = pncitc$goassessEnvSes
+logk =  pncitc$logk.x
+reg_age = lm(logk~age)
+plot(logk~age)
+reg_ses = lm(logk~ses)
+plot(logk~ses)
+```
+There did not appear to be any correlation. 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
